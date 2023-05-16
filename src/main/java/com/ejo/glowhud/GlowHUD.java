@@ -49,4 +49,5 @@ public class GlowHUD implements ModInitializer {
 		autoSaveThread.setDaemon(true);
 		autoSaveThread.start();
 	}
+
 }
