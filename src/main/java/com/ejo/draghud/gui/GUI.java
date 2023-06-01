@@ -26,7 +26,7 @@ public class GUI extends Screen {
     // --------------------------------------------------------
     private final GuiButton saveButton = new GuiButton(this,"Save",new Vector(width-30,height-20),new Vector(30,20),new ColorE(0,100,175,200),(params) -> {
         DragHUD.getSettingManager().saveAll();
-        Util.sendMessage("DragHUD: Settings Saved");
+        Util.sendMessage("Settings Saved");
     });
 
 
