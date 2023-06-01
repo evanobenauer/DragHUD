@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "glowhud",
+  "id": "draghud",
   "version": "${version}",
 
-  "name": "GlowHUD",
-  "description": "GlowHUD is a minecraft mod with a HUD that focuses on customization of information and features for the player",
+  "name": "DragHUD",
+  "description": "DragHUD is a minecraft mod with a HUD that focuses on customization of information and features for the player",
   "authors": [
     "Me!"
   ],
@@ -19,11 +19,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ejo.glowhud.GlowHUD"
+      "com.ejo.draghud.DragHUD"
     ]
   },
   "mixins": [
-    "glowhud.mixins.json"
+    "draghud.mixins.json"
   ],
 
   "depends": {
