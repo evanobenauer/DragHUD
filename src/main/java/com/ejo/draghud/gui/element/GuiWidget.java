@@ -46,7 +46,6 @@ public abstract class GuiWidget {
 
     protected abstract void drawWidget(PoseStack stack, Vector mousePos);
 
-    //TODO: Combine mouseClicked and mouseReleased into 1 method. Also make this abstract when fully implemented
     public abstract void mousePressed(int button, int state, Vector mousePos);
 
     public abstract void keyPressed(int key, int scancode, int modifiers);
@@ -58,7 +57,7 @@ public abstract class GuiWidget {
         } else {
             if (fade > min) fade -= speed;
         }
-        fade = NumberUtil.boundValue(fade,0,255).floatValue();
+        fade = NumberUtil.getBoundValue(fade,0,255).floatValue();
         return fade;
     }
 

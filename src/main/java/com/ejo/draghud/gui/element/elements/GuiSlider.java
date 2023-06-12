@@ -45,7 +45,7 @@ public class GuiSlider<T extends Number> extends GuiWidget {
             double settingRange = getSetting().getMax().doubleValue() - getSetting().getMin().doubleValue();
 
             double sliderWidth = mousePos.getX() - getPos().getX();
-            double sliderPercent = NumberUtil.boundValue(sliderWidth, 0, getSize().getX()).doubleValue() / getSize().getX();
+            double sliderPercent = NumberUtil.getBoundValue(sliderWidth, 0, getSize().getX()).doubleValue() / getSize().getX();
 
             double calculatedValue = getSetting().getMin().doubleValue() + (sliderPercent * settingRange);
             double val = MathE.roundDouble((((Math.round(calculatedValue / getSetting().getStep().doubleValue())) * getSetting().getStep().doubleValue())), 2); //Rounds the slider based off of the step val
