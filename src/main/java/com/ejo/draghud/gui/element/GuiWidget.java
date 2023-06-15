@@ -1,7 +1,9 @@
 package com.ejo.draghud.gui.element;
 
 import com.ejo.draghud.event.EventRegistry;
+import com.ejo.draghud.gui.element.elements.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
+import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import org.util.glowlib.event.EventAction;
@@ -11,7 +13,6 @@ import org.util.glowlib.misc.Container;
 import org.util.glowlib.util.NumberUtil;
 
 public abstract class GuiWidget {
-
 
     private final Screen screen;
 
@@ -40,8 +41,18 @@ public abstract class GuiWidget {
 
     public void draw(PoseStack stack, Vector mousePos) {
         mouseOver = updateMouseOver(mousePos);
-        drawWidget(stack,mousePos);
-        DrawUtil.drawRectangle(stack,getPos(),getSize(),new ColorE(255,255,255,(int)hoverFade));
+        drawWidget(stack, mousePos);
+        DrawUtil.drawRectangle(stack, getPos(), getSize(), new ColorE(255, 255, 255, (int) hoverFade));
+        if (isMouseOver() && !(this instanceof GuiWindow)) {
+            try {
+                int xOffset = 6;
+                int yOffset = -8;
+                DrawUtil.drawRectangle(stack, mousePos.getAdded(xOffset,yOffset), new Vector(DrawUtil.getTextWidth(getSetting().getDescription()) + 4, 13), new ColorE(50, 50, 50, 150));
+                DrawUtil.drawText(stack,getSetting().getDescription(),mousePos.getAdded(2 + xOffset,2 + yOffset),ColorE.WHITE);
+            } catch (Exception e) {
+                //
+            }
+        }
     }
 
     protected abstract void drawWidget(PoseStack stack, Vector mousePos);
@@ -100,5 +111,10 @@ public abstract class GuiWidget {
     public Screen getScreen() {
         return screen;
     }
+
+    public SettingWidget getSetting() {
+        return null;
+    }
+
 
 }

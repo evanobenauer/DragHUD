@@ -10,27 +10,23 @@ import org.lwjgl.glfw.GLFW;
 import org.util.glowlib.math.Vector;
 import org.util.glowlib.misc.ColorE;
 import org.util.glowlib.setting.Setting;
-import org.util.glowlib.setting.SettingUI;
 import org.util.glowlib.time.StopWatch;
 
 public class GuiTextField extends GuiWidget {
 
-    private final Setting<String> setting;
+    private final SettingWidget<String> setting;
     private final String title;
 
     private final StopWatch cursorTimer = new StopWatch();
     private boolean typing;
 
 
-    private GuiTextField(Screen screen, String title, SettingUI<String> setting, Vector pos, Vector size) {
+    private GuiTextField(Screen screen, String title, SettingWidget<String> setting, Vector pos, Vector size) {
         super(screen, pos, size, true);
-        this.typing = false;
         this.setting = setting;
         this.title = title;
-    }
 
-    public GuiTextField(Screen screen, SettingUI<String> setting, Vector pos, Vector size) {
-        this(screen,setting.getKey(),setting,pos,size);
+        this.typing = false;
     }
 
     public GuiTextField(Screen screen, SettingWidget<String> setting, Vector pos, Vector size) {
@@ -144,7 +140,7 @@ public class GuiTextField extends GuiWidget {
         return title;
     }
 
-    public Setting<String> getSetting() {
+    public SettingWidget<String> getSetting() {
         return setting;
     }
 

@@ -9,11 +9,11 @@ import net.minecraft.client.gui.screens.Screen;
 import org.util.glowlib.event.EventAction;
 import org.util.glowlib.math.Vector;
 import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.setting.SettingUI;
+import org.util.glowlib.setting.Setting;
 
 public class GuiToggle extends GuiWidget {
 
-    private final SettingUI<Boolean> setting;
+    private final SettingWidget<Boolean> setting;
     private final String title;
 
     private float toggleFade = 0;
@@ -23,15 +23,11 @@ public class GuiToggle extends GuiWidget {
     });
 
 
-    private GuiToggle(Screen screen, String title, SettingUI<Boolean> setting, Vector pos, Vector size, ColorE color) {
+    private GuiToggle(Screen screen, String title, SettingWidget<Boolean> setting, Vector pos, Vector size, ColorE color) {
         super(screen,pos,size,true);
         this.setting = setting;
         this.title = title;
         this.ANIMATION_TOGGLE_FADE.subscribe();
-    }
-
-    public GuiToggle(Screen screen, SettingUI<Boolean> setting, Vector pos, Vector size, ColorE color) {
-        this(screen,setting.getKey(),setting,pos,size,color);
     }
 
     public GuiToggle(Screen screen, SettingWidget<Boolean> setting, Vector pos, Vector size, ColorE color) {
@@ -64,7 +60,7 @@ public class GuiToggle extends GuiWidget {
         return title;
     }
 
-    public SettingUI<Boolean> getSetting() {
+    public SettingWidget<Boolean> getSetting() {
         return setting;
     }
 

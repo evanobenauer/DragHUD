@@ -33,16 +33,16 @@ public class SettingWindow extends GuiWindow {
         });
 
         for (Setting<?> setting : DragHUD.getSettingManager().getSettingList().values()) {
-            if (setting instanceof SettingWidget settingUI) {
-                if (settingUI.getWindow().getTitle().equals(parentWindow.getTitle())) {
-                    if (settingUI.getType().equals("boolean"))
-                        widgetList.add(new GuiToggle(getScreen(), settingUI, Vector.NULL, Vector.NULL, ColorE.WHITE));
-                    if (settingUI.getType().equals("integer"))
-                        widgetList.add(new GuiSlider<Integer>(getScreen(), settingUI, Vector.NULL, Vector.NULL, ColorE.WHITE));
-                    if (settingUI.getType().equals("double") || settingUI.getType().equals("float"))
-                        widgetList.add(new GuiSlider<Double>(getScreen(), settingUI, Vector.NULL, Vector.NULL, ColorE.WHITE));
-                    if (settingUI.getType().equals("string"))
-                        widgetList.add(new GuiTextField(getScreen(), settingUI, Vector.NULL, Vector.NULL));
+            if (setting instanceof SettingWidget settingWidget) {
+                if (settingWidget.getWindow().getTitle().equals(parentWindow.getTitle())) {
+                    if (settingWidget.getType().equals("boolean"))
+                        widgetList.add(new GuiToggle(getScreen(), settingWidget, Vector.NULL, Vector.NULL, ColorE.WHITE));
+                    if (settingWidget.getType().equals("integer"))
+                        widgetList.add(new GuiSlider<Integer>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, ColorE.WHITE));
+                    if (settingWidget.getType().equals("double") || settingWidget.getType().equals("float"))
+                        widgetList.add(new GuiSlider<Double>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, ColorE.WHITE));
+                    if (settingWidget.getType().equals("string"))
+                        widgetList.add(new GuiTextField(getScreen(), settingWidget, Vector.NULL, Vector.NULL));
                 }
             }
         }
@@ -63,7 +63,7 @@ public class SettingWindow extends GuiWindow {
         DrawUtil.drawText(
                 stack,
                 getParentWindow().getTitle(),
-                getPos().getAdded(new Vector(closeButton.getSize().getX() + 4 + 2,getSize().getY()/2 - DrawUtil.getTextHeight()/2)),
+                getPos().getAdded(new Vector(closeButton.getSize().getX() + 4 + 2,1 + getSize().getY()/2 - DrawUtil.getTextHeight()/2)),
                 ColorE.WHITE);
 
         //Draw Widgets

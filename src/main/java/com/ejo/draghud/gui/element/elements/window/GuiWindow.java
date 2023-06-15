@@ -68,9 +68,9 @@ public abstract class GuiWindow extends GuiWidget {
 
         if (Minecraft.getInstance().screen == DragHUD.getGuiManager().getGui() && shouldDrawPin()) {
             if (isPinned()) {
-                DrawUtil.drawRectangle(stack, getPos(),new Vector(10,10), ColorE.GREEN);
+                DrawUtil.drawRectangle(stack, getPos(),new Vector(10,10), new ColorE(0,255,0,125));
             } else {
-                DrawUtil.drawRectangle(stack, getPos(),new Vector(10,10), ColorE.RED);
+                DrawUtil.drawRectangle(stack, getPos(),new Vector(10,10), new ColorE(255,0,0,125));
             }
         }
     }

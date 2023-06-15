@@ -9,32 +9,29 @@ import net.minecraft.client.gui.screens.Screen;
 import org.util.glowlib.math.MathE;
 import org.util.glowlib.math.Vector;
 import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.setting.SettingUI;
 import org.util.glowlib.util.NumberUtil;
 
 public class GuiSlider<T extends Number> extends GuiWidget {
 
-    private final SettingUI<T> setting;
+    private final SettingWidget<T> setting;
     private final String title;
-
-    private boolean sliding;
 
     private ColorE color;
 
-    private GuiSlider(Screen screen, String title, SettingUI<T> value, Vector pos, Vector size, ColorE color) {
+    private boolean sliding;
+
+    private GuiSlider(Screen screen, String title, SettingWidget<T> setting, Vector pos, Vector size, ColorE color) {
         super(screen, pos, size, true);
-        this.setting = value;
-        this.color = color;
+        this.setting = setting;
         this.title = title;
+
+        this.color = color;
+
         this.sliding = false;
     }
 
-    public GuiSlider(Screen screen, SettingUI<T> value, Vector pos, Vector size, ColorE color) {
-        this(screen,value.getKey(),value,pos,size,color);
-    }
-
-    public GuiSlider(Screen screen, SettingWidget<T> value, Vector pos, Vector size, ColorE color) {
-        this(screen,value.getName(),value,pos,size,color);
+    public GuiSlider(Screen screen, SettingWidget<T> setting, Vector pos, Vector size, ColorE color) {
+        this(screen,setting.getName(),setting,pos,size,color);
     }
 
 
@@ -47,7 +44,7 @@ public class GuiSlider<T extends Number> extends GuiWidget {
             double sliderWidth = mousePos.getX() - getPos().getX();
             double sliderPercent = NumberUtil.getBoundValue(sliderWidth, 0, getSize().getX()).doubleValue() / getSize().getX();
 
-            double calculatedValue = getSetting().getMin().doubleValue() + (sliderPercent * settingRange);
+            double calculatedValue = getSetting().getMin().doubleValue() + sliderPercent * settingRange;
             double val = MathE.roundDouble((((Math.round(calculatedValue / getSetting().getStep().doubleValue())) * getSetting().getStep().doubleValue())), 2); //Rounds the slider based off of the step val
 
             T value = getSetting().getType().equals("integer") ? (T) (Integer) (int) val : (T) (Double) val;
@@ -58,7 +55,8 @@ public class GuiSlider<T extends Number> extends GuiWidget {
         DrawUtil.drawRectangle(stack, getPos(), getSize(), new ColorE(50, 50, 50, 200));
 
         //Draw the slider fill
-        double sliderWidth = getSize().getX() * (getSetting().get().doubleValue() / (getSetting().getMax()).doubleValue());
+        double valueRange = getSetting().getMax().doubleValue() - getSetting().getMin().doubleValue();
+        double sliderWidth = getSize().getX() / valueRange * (getSetting().get().doubleValue() - getSetting().getMin().doubleValue());
         int border = 1;
         DrawUtil.drawRectangle(stack, getPos().getAdded(new Vector(border,border)), new Vector(sliderWidth -border, getSize().getY() - border*2), new ColorE(0, 125, 200, 150));
 
@@ -122,7 +120,7 @@ public class GuiSlider<T extends Number> extends GuiWidget {
     }
 
 
-    public SettingUI<T> getSetting() {
+    public SettingWidget<T> getSetting() {
         return setting;
     }
 }
