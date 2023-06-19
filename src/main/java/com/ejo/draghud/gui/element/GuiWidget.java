@@ -89,6 +89,11 @@ public abstract class GuiWidget {
 
     public void setSize(Vector vector) {
         this.size.set(vector);
+        try {
+            ((GuiWindow)this).setAnchorCoordinates();
+        } catch (Exception e) {
+            //
+        }
     }
 
 
@@ -112,7 +117,7 @@ public abstract class GuiWidget {
         return screen;
     }
 
-    public SettingWidget getSetting() {
+    public SettingWidget<?> getSetting() {
         return null;
     }
 

@@ -12,6 +12,8 @@ import org.util.glowlib.misc.ColorE;
 
 public class DrawUtil {
 
+    public static ColorE HUD_BLUE = new ColorE(0,125,200);
+
     public static void drawText(PoseStack stack, String text, Vector pos, ColorE color, boolean drawShadow, float scale) {
         float x = (float)pos.getX();
         float y = (float)pos.getY();

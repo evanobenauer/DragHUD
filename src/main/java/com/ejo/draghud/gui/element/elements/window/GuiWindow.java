@@ -5,16 +5,20 @@ import com.ejo.draghud.gui.element.GuiWidget;
 import com.ejo.draghud.gui.element.elements.window.windows.SettingWindow;
 import com.ejo.draghud.util.Key;
 import com.ejo.draghud.util.DrawUtil;
+import com.ejo.draghud.util.SettingWidget;
+import com.ejo.draghud.util.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import org.lwjgl.glfw.GLFW;
 import org.util.glowlib.math.Vector;
 import org.util.glowlib.math.VectorMod;
 import org.util.glowlib.misc.ColorE;
 import org.util.glowlib.setting.Setting;
 import org.util.glowlib.setting.SettingManager;
+import org.util.glowlib.time.StopWatch;
 
 public abstract class GuiWindow extends GuiWidget {
 
@@ -26,6 +30,8 @@ public abstract class GuiWindow extends GuiWidget {
     private final String title;
 
     private final Setting<Boolean> isPinned;
+    private final Setting<String> anchorX;
+    private final Setting<String> anchorY;
 
     private boolean isDragging;
     private final VectorMod dragOffset;
@@ -42,29 +48,57 @@ public abstract class GuiWindow extends GuiWidget {
         SettingManager manager = this instanceof SettingWindow ? SettingManager.getDefaultManager() : DragHUD.getSettingManager();
         this.pos = new Setting<>(manager, title + "_pos",pos);
         this.isPinned = new Setting<>(manager, title + "_pinned",false);
+        this.anchorX = new Setting<>(manager,title + "_anchorX","NONE");
+        this.anchorY = new Setting<>(manager,title + "_anchorY","NONE");
     }
+
+    StopWatch watch = new StopWatch();
 
     @Override
     public void drawWidget(PoseStack stack, Vector mousePos) {
         if (Minecraft.getInstance().screen == DragHUD.getGuiManager().getGui()) {
             if (isDragging()) setPos(mousePos.getAdded(getDragOffset()));
 
-            if (getPos().getX() < 0)
+            //Force HUD elements on screen
+            if (getPos().getX() < 0) {
                 setPos(new Vector(0, getPos().getY()));
-            if (getPos().getY() < 0)
+            }
+            if (getPos().getY() < 0) {
                 setPos(new Vector(getPos().getX(), 0));
-
-            if (getPos().getX() + getSize().getX() > getScreen().width)
+            }
+            if (getPos().getX() + getSize().getX() > getScreen().width) {
                 setPos(new Vector(getScreen().width - getSize().getX(), getPos().getY()));
-            if (getPos().getY() + getSize().getY() > getScreen().height)
+            }
+            if (getPos().getY() + getSize().getY() > getScreen().height) {
                 setPos(new Vector(getPos().getX(), getScreen().height - getSize().getY()));
+            }
+
+            //Draw borderlines
+            if (getPos().getX() <= 0 && anchorX.get().equals("L")) {
+                DrawUtil.drawRectangle(stack,getPos(),new Vector(1,getSize().getY()),ColorE.RED);
+            }
+            if (getPos().getX() + getSize().getX() >= getScreen().width && anchorX.get().equals("R")) {
+                DrawUtil.drawRectangle(stack,getPos().getAdded(getSize().getX() - 1,0),new Vector(1,getSize().getY()),ColorE.RED);
+            }
+            if (getPos().getY() <= 0 && anchorY.get().equals("U")) {
+                DrawUtil.drawRectangle(stack,getPos(),new Vector(getSize().getX(),1),ColorE.RED);
+            }
+            if (getPos().getY() + getSize().getY() >= getScreen().height && anchorY.get().equals("D")) {
+                DrawUtil.drawRectangle(stack,getPos().getAdded(0,getSize().getY() - 1),new Vector(getSize().getX(),1),ColorE.RED);
+            }
         }
-        //TODO: Add Width Anchoring Here (Dont put inside of the gui only if statement)
+
+        setAnchorCoordinates();
+
+        //TODO: Figure out how to refresh anchor coordinates without being inside of the gui
+
+        //TODO: Add width/height scaling to anchored objects based on their orientation for easy window resizing
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         drawWindow(stack, mousePos);
         if (isSettingsOpen()) getSettingWindow().draw(stack, mousePos);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
 
         if (Minecraft.getInstance().screen == DragHUD.getGuiManager().getGui() && shouldDrawPin()) {
             if (isPinned()) {
@@ -75,21 +109,51 @@ public abstract class GuiWindow extends GuiWidget {
         }
     }
 
+    //This method will be called in the set position method every time the position is set
+    public void setAnchorCoordinates() {
+        if (anchorX.get().equals("NONE") && anchorY.get().equals("NONE")) return;
+        //Set Anchor Coordinates
+        if (anchorX.get().equals("L"))
+            setPos(new Vector(0, getPos().getY()));
+        else if (anchorX.get().equals("R"))
+            setPos(new Vector(Util.getScaledWidth() - getSize().getX(), getPos().getY()));
+
+        if (anchorY.get().equals("U"))
+            setPos(new Vector(getPos().getX(), 0));
+        else if (anchorY.get().equals("D"))
+            setPos(new Vector(getPos().getX(), Util.getScaledHeight() - getSize().getY()));
+    }
+
 
     protected abstract void drawWindow(PoseStack stack, Vector mousePos);
 
 
     @Override
     public void mousePressed(int button, int state, Vector mousePos) {
-        if (isSettingsOpen()) {
-            getSettingWindow().mousePressed(button, state, mousePos);
+        if (button == 0 && !Key.KEY_LSHIFT.isKeyDown()) {
+            if (isMouseOver() && state == 1) {
+                anchorX.set("NONE");
+                anchorY.set("NONE");
+            } else {
+                //Set if anchored
+                if (getPos().getX() <= 0) {
+                    if (isDragging()) anchorX.set("L");
+                } else if (getPos().getX() + getSize().getX() >= getScreen().width) {
+                    if (isDragging()) anchorX.set("R");
+                }
+                if (getPos().getY() <= 0) {
+                    if (isDragging()) anchorY.set("U");
+                } else if (getPos().getY() + getSize().getY() >= getScreen().height) {
+                    if (isDragging()) anchorY.set("D");
+                }
+            }
         }
 
         if (state == 1) {
             if (isMouseOver()) {
                 if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                     getDragOffset().set(getPos().getAdded(mousePos.getMultiplied(-1)));
-                    setDragging(true);
+                    if (!Key.KEY_LSHIFT.isKeyDown()) setDragging(true);
 
                     if (!isSettingsOpen() && Key.KEY_LSHIFT.isKeyDown() && !(this instanceof SettingWindow)) {
                         this.settingWindow = new SettingWindow(getScreen(), this, new Vector(getScreen().width / 2f - 100 / 2f, getScreen().height / 2f - 100 / 2f)) {
@@ -105,6 +169,10 @@ public abstract class GuiWindow extends GuiWidget {
                     setPinned(!isPinned());
                 }
             }
+        }
+
+        if (isSettingsOpen()) {
+            getSettingWindow().mousePressed(button, state, mousePos);
         }
 
         if (isDragging() && state == 0) {

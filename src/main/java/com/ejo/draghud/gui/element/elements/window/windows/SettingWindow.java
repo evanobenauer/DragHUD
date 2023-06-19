@@ -2,10 +2,7 @@ package com.ejo.draghud.gui.element.elements.window.windows;
 
 import com.ejo.draghud.DragHUD;
 import com.ejo.draghud.gui.element.GuiWidget;
-import com.ejo.draghud.gui.element.elements.GuiButton;
-import com.ejo.draghud.gui.element.elements.GuiSlider;
-import com.ejo.draghud.gui.element.elements.GuiTextField;
-import com.ejo.draghud.gui.element.elements.GuiToggle;
+import com.ejo.draghud.gui.element.elements.*;
 import com.ejo.draghud.gui.element.elements.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
@@ -35,13 +32,15 @@ public class SettingWindow extends GuiWindow {
         for (Setting<?> setting : DragHUD.getSettingManager().getSettingList().values()) {
             if (setting instanceof SettingWidget settingWidget) {
                 if (settingWidget.getWindow().getTitle().equals(parentWindow.getTitle())) {
-                    if (settingWidget.getType().equals("boolean"))
-                        widgetList.add(new GuiToggle(getScreen(), settingWidget, Vector.NULL, Vector.NULL, ColorE.WHITE));
-                    if (settingWidget.getType().equals("integer"))
-                        widgetList.add(new GuiSlider<Integer>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, ColorE.WHITE));
-                    if (settingWidget.getType().equals("double") || settingWidget.getType().equals("float"))
-                        widgetList.add(new GuiSlider<Double>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, ColorE.WHITE));
-                    if (settingWidget.getType().equals("string"))
+                    if (settingWidget.getModes().size() > 0)
+                        widgetList.add(new GuiModeCycle<>(getScreen(),settingWidget,Vector.NULL,Vector.NULL,DrawUtil.HUD_BLUE));
+                    else if (settingWidget.getType().equals("boolean"))
+                        widgetList.add(new GuiToggle(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    else if (settingWidget.getType().equals("integer"))
+                        widgetList.add(new GuiSlider<Integer>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    else if (settingWidget.getType().equals("double") || settingWidget.getType().equals("float"))
+                        widgetList.add(new GuiSlider<Double>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    else if (settingWidget.getType().equals("string"))
                         widgetList.add(new GuiTextField(getScreen(), settingWidget, Vector.NULL, Vector.NULL));
                 }
             }

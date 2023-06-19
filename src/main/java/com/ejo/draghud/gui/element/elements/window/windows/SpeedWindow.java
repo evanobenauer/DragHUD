@@ -17,18 +17,18 @@ public class SpeedWindow extends GuiWindow {
     private final boolean doLabels = true;
     private final ColorE labelColor = ColorE.GRAY;
 
-    public SettingWidget<Boolean> twoDimensional;
+    public SettingWidget<String> mode;
 
     public SpeedWindow(Screen screen, Vector pos) {
         super(screen, "Speed", pos, Vector.NULL);
-        this.twoDimensional = new SettingWidget<>(this,"2D","Desc",false);
+        this.mode = new SettingWidget<>(this,"Mode","Desc","2D","2D","3D");
     }
 
     @Override
     protected void drawWindow(PoseStack stack, Vector mousePos) {
         RenderSystem.setShaderColor(1,1,1,1);
         String label = (doLabels ? "Speed " : "");
-        String currentSpeed = String.format("%.2f", getEntitySpeed(Minecraft.getInstance().player, !twoDimensional.get())) + "m/s";
+        String currentSpeed = String.format("%.2f", getEntitySpeed(Minecraft.getInstance().player, mode.get().equals("3D"))) + "m/s";
 
         setSize(new Vector((int) DrawUtil.getTextWidth(label + currentSpeed) + 6,13));
 

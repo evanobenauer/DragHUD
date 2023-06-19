@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screens.Screen;
 import org.util.glowlib.event.EventAction;
 import org.util.glowlib.math.Vector;
 import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.setting.Setting;
 
 public class GuiToggle extends GuiWidget {
 

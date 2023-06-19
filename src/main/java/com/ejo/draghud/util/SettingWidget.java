@@ -4,6 +4,9 @@ import com.ejo.draghud.DragHUD;
 import com.ejo.draghud.gui.element.elements.window.GuiWindow;
 import org.util.glowlib.setting.Setting;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class SettingWidget<T> extends Setting<T> {
 
     private final GuiWindow window;
@@ -71,6 +74,14 @@ public class SettingWidget<T> extends Setting<T> {
 
     public Double getStep() {
         return step;
+    }
+
+    public ArrayList<T> getModes() {
+        try {
+            return new ArrayList<>(Arrays.asList(modes));
+        } catch (NullPointerException e) {
+            return new ArrayList<>();
+        }
     }
 
     public boolean isNumbersOnly() {

@@ -35,10 +35,10 @@ public class GuiTextField extends GuiWidget {
 
     @Override
     protected void drawWidget(PoseStack stack, Vector mousePos) {
-        DrawUtil.drawRectangle(stack,getPos(), getSize(), new ColorE(0,0,0,255));
+        DrawUtil.drawRectangle(stack,getPos(), getSize(), new ColorE(50,50,50,200));
 
         DrawUtil.drawRectangle(stack,
-                getPos().getAdded(new Vector(2 + DrawUtil.getTextWidth(getTitle() + ": "), - 2)),
+                getPos().getAdded(new Vector(2 + DrawUtil.getTextWidth(getTitle() + ": "), getSize().getY()- 2)),
                 getSize().getAdded(new Vector(- 4 - DrawUtil.getTextWidth(getTitle() + ": "),1-getSize().getY())),
                 ColorE.WHITE);
 
@@ -53,7 +53,7 @@ public class GuiTextField extends GuiWidget {
             DrawUtil.drawRectangle(stack, new Vector(x,getPos().getY() + 3),new Vector(1,getSize().getY() - 6),new ColorE(255,255,255,alpha));
         }
 
-        DrawUtil.drawText(stack, msg, getPos().getAdded(new Vector(getPos().getX() + 2, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE);
+        DrawUtil.drawText(stack, msg, getPos().getAdded(new Vector(2, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE);
     }
 
     @Override

@@ -15,28 +15,24 @@ import org.util.glowlib.misc.ColorE;
 
 public class ArmorWindow extends GuiWindow {
 
-    private String armorDirection = "Horizontal";
+    public SettingWidget<String> mode;
 
-    public SettingWidget<Boolean> horizontal;
-    
     public ArmorWindow(Screen screen, Vector pos) {
         super(screen, "Armor",pos, new Vector(65,15));
-        horizontal = new SettingWidget<>(this,"Horizontal","None",true);
+        mode = new SettingWidget<>(this,"Mode","None","Horizontal","Horizontal","Vertical");
     }
 
     @Override
     protected void drawWindow(PoseStack stack, Vector mousePos) {
-        if (horizontal.get()) armorDirection = "Horizontal";
-        else armorDirection = "Vertical";
         boolean drawBar = Minecraft.getInstance().screen == getScreen();
         double xPos = getPos().getX();
         double yPos = getPos().getY() - 1;
         int i = 0;
 
-        if (armorDirection.equals("Horizontal")) {
+        if (mode.get().equals("Horizontal")) {
             setSize(new Vector(65,15));
         }
-        if (armorDirection.equals("Vertical")) {
+        if (mode.get().equals("Vertical")) {
             xPos += 1;
             setSize(new Vector(18,63));
         }
@@ -49,7 +45,7 @@ public class ArmorWindow extends GuiWindow {
             RenderSystem.setShaderColor(.2F,.2F,.2F,1F);
             double separation = 16;
             Vector texSize = new Vector(16,16);
-            if (armorDirection.equals("Horizontal")) {
+            if (mode.get().equals("Horizontal")) {
                 DrawUtil.drawTexturedRect(helmet, xPos, yPos, 16, 16);
                 DrawUtil.drawTexturedRect(chestplate, xPos + separation, yPos, 16, 16);
                 separation += 16;
@@ -57,7 +53,7 @@ public class ArmorWindow extends GuiWindow {
                 separation += 16;
                 DrawUtil.drawTexturedRect(boots, xPos + separation, yPos, 16, 16);
             }
-            if (armorDirection.equals("Vertical")) {
+            if (mode.get().equals("Vertical")) {
                 DrawUtil.drawTexturedRect(helmet, xPos, yPos, 16, 16);
                 DrawUtil.drawTexturedRect(chestplate, xPos, yPos + separation, 16, 16);
                 separation += 16;
@@ -74,8 +70,8 @@ public class ArmorWindow extends GuiWindow {
 
             enableItemRendering();
             PoseStack itemStack = new PoseStack();
-            if (armorDirection.equals("Horizontal")) DrawUtil.drawItemStack(itemStack,Istack, new Vector((xPos + 16 * i++), yPos));
-            if (armorDirection.equals("Vertical")) DrawUtil.drawItemStack(itemStack,Istack, new Vector(xPos, yPos + 16 * i++));
+            if (mode.get().equals("Horizontal")) DrawUtil.drawItemStack(itemStack,Istack, new Vector((xPos + 16 * i++), yPos));
+            if (mode.get().equals("Vertical")) DrawUtil.drawItemStack(itemStack,Istack, new Vector(xPos, yPos + 16 * i++));
             disableItemRendering();
 
             /*

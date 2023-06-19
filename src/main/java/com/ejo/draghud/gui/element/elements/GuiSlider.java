@@ -57,11 +57,11 @@ public class GuiSlider<T extends Number> extends GuiWidget {
         //Draw the slider fill
         double valueRange = getSetting().getMax().doubleValue() - getSetting().getMin().doubleValue();
         double sliderWidth = getSize().getX() / valueRange * (getSetting().get().doubleValue() - getSetting().getMin().doubleValue());
-        int border = 1;
+        int border = (int)getSize().getX()/40;
         DrawUtil.drawRectangle(stack, getPos().getAdded(new Vector(border,border)), new Vector(sliderWidth -border, getSize().getY() - border*2), new ColorE(0, 125, 200, 150));
 
         //Draw the slider node
-        int nodeWidth = (int) getSize().getX() / 20;
+        int nodeWidth = (int) getSize().getY() / 4;
         double nodeX = sliderWidth - nodeWidth / 2f;
         if (nodeX + nodeWidth > getSize().getX()) nodeX = getSize().getX() - nodeWidth;
         if (nodeX < 0) nodeX = 0;
@@ -74,7 +74,7 @@ public class GuiSlider<T extends Number> extends GuiWidget {
         } else {
             title = getTitle() + ": " + String.format("%.2f", getSetting().get());
         }
-        DrawUtil.drawText(stack, title, getPos().getAdded(new Vector(2, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE);
+        DrawUtil.drawText(stack, title, getPos().getAdded(new Vector(border + 1, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2 + 1)), ColorE.WHITE);
     }
 
 
