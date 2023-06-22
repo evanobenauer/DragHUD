@@ -5,10 +5,11 @@ import com.ejo.draghud.gui.element.GuiWidget;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import org.util.glowlib.event.EventAction;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
+import com.ejo.glowlib.event.EventAction;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
 
 public class GuiToggle extends GuiWidget {
 
@@ -35,10 +36,12 @@ public class GuiToggle extends GuiWidget {
 
 
     @Override
-    protected void drawWidget(PoseStack stack, Vector mousePos) {
-        DrawUtil.drawRectangle(stack, getPos(), getSize(), new ColorE(50, 50, 50, 200));
-        DrawUtil.drawRectangle(stack, getPos(), getSize(), new ColorE(0, 125, 200, (int) toggleFade));
-        DrawUtil.drawText(stack, getTitle(), getPos().getAdded(new Vector(2, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE);
+    protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
+        DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(50, 50, 50, 200));
+        DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(0, 125, 200, (int) toggleFade));
+        double scale = 1;
+        if (DrawUtil.getTextWidth(getTitle()) + 2 > getSize().getX()) scale = getSize().getX()/(DrawUtil.getTextWidth(getTitle()) + 2);
+        DrawUtil.drawText(graphics, getTitle(), getPos().getAdded(new Vector(2, 1 + getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE,true,(float)scale);
     }
 
 

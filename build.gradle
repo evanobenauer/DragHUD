@@ -14,7 +14,7 @@ repositories {
 
 //UDE FOR MAPPINGS https://linkie.shedaniel.dev/mappings?namespace=yarn&version=1.19.4&search=
 dependencies {
-    implementation 'com.github.evanobenauer:GlowLib:1.1.2'
+    implementation 'com.github.evanobenauer:GlowLib:1.1.3'
 }
 
 dependencies {

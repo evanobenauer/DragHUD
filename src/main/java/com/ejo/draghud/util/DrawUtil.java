@@ -3,35 +3,41 @@ package com.ejo.draghud.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+
+import java.util.logging.Level;
 
 public class DrawUtil {
 
     public static ColorE HUD_BLUE = new ColorE(0,125,200);
+    public static ColorE HUD_LABEL = new ColorE(190,190,190,215);
 
-    public static void drawText(PoseStack stack, String text, Vector pos, ColorE color, boolean drawShadow, float scale) {
-        float x = (float)pos.getX();
-        float y = (float)pos.getY();
-        stack.scale(scale, scale, 1);
-        if (drawShadow) {
-            Minecraft.getInstance().font.drawShadow(stack, text, x / scale, y / scale, color.getHash());
-        } else {
-            Minecraft.getInstance().font.draw(stack, text, x / scale, y / scale, color.getHash());
-        }
+    public static void drawText(GuiGraphics graphics, String text, Vector pos, ColorE color, boolean drawShadow, float scale) {
+        float x = (float) pos.getX();
+        float y = (float) pos.getY();
+        PoseStack stack = new PoseStack();
+        stack.scale(scale,scale,1);
+        Util.MC.font.drawInBatch(text, x*1/scale, y*1/scale, color.getHash(), drawShadow, stack.last().pose(), graphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880, Util.MC.font.isBidirectional());
+        graphics.flush();
     }
 
-    public static void drawText(PoseStack stack, String text, Vector pos, ColorE color) {
-        drawText(stack, text, pos, color, true, 1);
+    public static void drawText(GuiGraphics graphics, String text, Vector pos, ColorE color) {
+        drawText(graphics, text, pos, color, true, 1);
     }
 
-    public static void drawDualColorText(PoseStack stack, String text1, String text2, Vector pos, ColorE color1, ColorE color2) {
-        drawText(stack, text1, pos, color1);
-        drawText(stack, text2, pos.getAdded(new Vector(getTextWidth(text1) + 1, 0)), color2);
+    public static void drawDualColorText(GuiGraphics graphics, String text1, String text2, Vector pos, ColorE color1, ColorE color2) {
+        drawText(graphics, text1, pos, color1);
+        drawText(graphics, text2, pos.getAdded(new Vector(getTextWidth(text1) + 1, 0)), color2);
     }
 
 
@@ -52,8 +58,7 @@ public class DrawUtil {
     }
 
 
-
-    public static void drawRectangle(PoseStack stack, Vector pos, Vector size, ColorE color) {
+    public static void drawRectangle(GuiGraphics graphics, Vector pos, Vector size, ColorE color) {
         float x = (float)pos.getX();
         float y = (float)pos.getY();
         float width = (float)size.getX();
@@ -68,7 +73,7 @@ public class DrawUtil {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        Matrix4f matrix = stack.last().pose();
+        Matrix4f matrix = graphics.pose().last().pose();
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -125,10 +130,10 @@ public class DrawUtil {
     }
 
 
-    public static void drawItemStack(PoseStack poseStack, ItemStack stack, Vector pos) {
+    public static void drawItemStack(GuiGraphics graphics, ItemStack stack, Vector pos) {
         int x = (int) pos.getX();
         int y = (int) pos.getY();
-        Minecraft.getInstance().getItemRenderer().renderGuiItem(poseStack, stack, x, y);
-        Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(poseStack, Minecraft.getInstance().font, stack, x, y);
+        graphics.renderItem(stack,x,y);
+        graphics.renderItemDecorations(Util.MC.font,stack,x,y);
     }
 }

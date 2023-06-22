@@ -2,11 +2,13 @@ package com.ejo.draghud.gui.element.elements;
 
 import com.ejo.draghud.gui.element.GuiWidget;
 import com.ejo.draghud.util.DrawUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.util.LambdaUtil;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.util.LambdaUtil;
 
 public class GuiButton extends GuiWidget {
 
@@ -24,9 +26,12 @@ public class GuiButton extends GuiWidget {
     }
 
     @Override
-    protected void drawWidget(PoseStack stack, Vector mousePos) {
-        DrawUtil.drawRectangle(stack, getPos(), getSize(), getColor());
-        DrawUtil.drawText(stack, getTitle(), getPos().getAdded(new Vector(getSize().getX() / 2 - DrawUtil.getTextWidth(getTitle()) / 2, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE);
+    protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
+        DrawUtil.drawRectangle(graphics, getPos(), getSize(), getColor());
+        double scale = 1;
+        if (DrawUtil.getTextWidth(getTitle()) > getSize().getX()) scale = getSize().getX()/DrawUtil.getTextWidth(getTitle());
+        Vector pos = getPos().getAdded(new Vector(getSize().getX() / 2 - DrawUtil.getTextWidth(getTitle()) / 2, 1 + getSize().getY() / 2 - DrawUtil.getTextHeight() / 2));
+        DrawUtil.drawText(graphics, getTitle(), pos, ColorE.WHITE,true,(float)scale);
     }
 
     @Override
@@ -50,7 +55,8 @@ public class GuiButton extends GuiWidget {
            setColor(baseColor);
            try {
                if (isMouseOver()) getAction().run(mousePos, button);
-           } catch (Exception e) {//
+           } catch (Exception e) {
+               e.printStackTrace();
            }
        }
     }

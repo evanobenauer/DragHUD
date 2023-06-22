@@ -2,7 +2,7 @@ package com.ejo.draghud.util;
 
 import com.ejo.draghud.DragHUD;
 import com.ejo.draghud.gui.element.elements.window.GuiWindow;
-import org.util.glowlib.setting.Setting;
+import com.ejo.glowlib.setting.Setting;
 
 import java.util.ArrayList;
 import java.util.Arrays;

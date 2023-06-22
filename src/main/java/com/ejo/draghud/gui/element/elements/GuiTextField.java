@@ -5,12 +5,13 @@ import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import org.lwjgl.glfw.GLFW;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.setting.Setting;
-import org.util.glowlib.time.StopWatch;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.setting.Setting;
+import com.ejo.glowlib.time.StopWatch;
 
 public class GuiTextField extends GuiWidget {
 
@@ -34,10 +35,10 @@ public class GuiTextField extends GuiWidget {
     }
 
     @Override
-    protected void drawWidget(PoseStack stack, Vector mousePos) {
-        DrawUtil.drawRectangle(stack,getPos(), getSize(), new ColorE(50,50,50,200));
+    protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
+        DrawUtil.drawRectangle(graphics,getPos(), getSize(), new ColorE(50,50,50,200));
 
-        DrawUtil.drawRectangle(stack,
+        DrawUtil.drawRectangle(graphics,
                 getPos().getAdded(new Vector(2 + DrawUtil.getTextWidth(getTitle() + ": "), getSize().getY()- 2)),
                 getSize().getAdded(new Vector(- 4 - DrawUtil.getTextWidth(getTitle() + ": "),1-getSize().getY())),
                 ColorE.WHITE);
@@ -50,10 +51,11 @@ public class GuiTextField extends GuiWidget {
             double x = (DrawUtil.getTextWidth(msg) > getSize().getX() - 4)
                     ? getPos().getX() + getSize().getX() - 1
                     : (getPos().getX() + 3 + DrawUtil.getTextWidth(getTitle() + ": ") + DrawUtil.getTextWidth(getSetting().get()));
-            DrawUtil.drawRectangle(stack, new Vector(x,getPos().getY() + 3),new Vector(1,getSize().getY() - 6),new ColorE(255,255,255,alpha));
+            DrawUtil.drawRectangle(graphics, new Vector(x,getPos().getY() + 3),new Vector(1,getSize().getY() - 6),new ColorE(255,255,255,alpha));
         }
-
-        DrawUtil.drawText(stack, msg, getPos().getAdded(new Vector(2, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE);
+        double scale = 1;
+        if (DrawUtil.getTextWidth(msg) + 2 > getSize().getX()) scale = getSize().getX()/(DrawUtil.getTextWidth(msg) + 2);
+        DrawUtil.drawText(graphics, msg, getPos().getAdded(new Vector(2, 1 + getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE,true,(float)scale);
     }
 
     @Override

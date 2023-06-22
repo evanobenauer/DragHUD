@@ -5,10 +5,11 @@ import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.Key;
 import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.util.NumberUtil;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.util.NumberUtil;
 
 public class GuiModeCycle<T> extends GuiWidget {
 
@@ -29,17 +30,19 @@ public class GuiModeCycle<T> extends GuiWidget {
     }
 
     @Override
-    protected void drawWidget(PoseStack stack, Vector mousePos) {
+    protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
         //Draw Background
-        DrawUtil.drawRectangle(stack,getPos(),getSize(),new ColorE(50,50,50,200));
+        DrawUtil.drawRectangle(graphics,getPos(),getSize(),new ColorE(50,50,50,200));
 
         //Draw Mode Arrows
-        DrawUtil.drawRectangle(stack,getPos().getAdded(2,2),new Vector(2,getSize().getY()-4),getColorL());
-        DrawUtil.drawRectangle(stack,getPos().getAdded(-2 + getSize().getX() - 2,2),new Vector(2,getSize().getY()-4),getColorR());
+        DrawUtil.drawRectangle(graphics,getPos().getAdded(2,2),new Vector(2,getSize().getY()-4),getColorL());
+        DrawUtil.drawRectangle(graphics,getPos().getAdded(-2 + getSize().getX() - 2,2),new Vector(2,getSize().getY()-4),getColorR());
 
         //Draw the slider text
         String text = getSetting().getName() + ": " + getSetting().get();
-        DrawUtil.drawText(stack,text,getPos().getAdded(getSize().getX()/2 - DrawUtil.getTextWidth(text)/2,getSize().getY()/2 - DrawUtil.getTextHeight()/2),ColorE.WHITE);
+        double scale = 1;
+        if (DrawUtil.getTextWidth(text) > getSize().getX()) scale = getSize().getX()/DrawUtil.getTextWidth(text);
+        DrawUtil.drawText(graphics,text,getPos().getAdded(getSize().getX()/2 - DrawUtil.getTextWidth(text)/2,1 + getSize().getY()/2 - DrawUtil.getTextHeight()/2),ColorE.WHITE,true,(float)scale);
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.ejo.draghud;
 import com.ejo.draghud.gui.GuiManager;
 import com.ejo.draghud.util.Util;
 import net.fabricmc.api.ModInitializer;
-import org.util.glowlib.setting.SettingManager;
-import org.util.glowlib.time.StopWatch;
+import com.ejo.glowlib.setting.SettingManager;
+import com.ejo.glowlib.time.StopWatch;
 
 public class DragHUD implements ModInitializer {
 
@@ -37,6 +37,11 @@ public class DragHUD implements ModInitializer {
 		int minutes = 5;
 		Thread autoSaveThread = new Thread(() -> {
 			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				autoSaveTimer.start();
 				if (autoSaveTimer.hasTimePassedS(minutes * 60)) { //Save every 5 minutes
 					getSettingManager().saveAll();

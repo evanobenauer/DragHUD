@@ -6,12 +6,13 @@ import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
 
 public class ArmorWindow extends GuiWindow {
 
@@ -19,11 +20,11 @@ public class ArmorWindow extends GuiWindow {
 
     public ArmorWindow(Screen screen, Vector pos) {
         super(screen, "Armor",pos, new Vector(65,15));
-        mode = new SettingWidget<>(this,"Mode","None","Horizontal","Horizontal","Vertical");
+        mode = new SettingWidget<>(this,"Mode","The direction the armor is rendered","Horizontal","Horizontal","Vertical");
     }
 
     @Override
-    protected void drawWindow(PoseStack stack, Vector mousePos) {
+    protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
         boolean drawBar = Minecraft.getInstance().screen == getScreen();
         double xPos = getPos().getX();
         double yPos = getPos().getY() - 1;
@@ -63,15 +64,17 @@ public class ArmorWindow extends GuiWindow {
             }
 
         }
+        RenderSystem.setShaderColor(1F,1F,1F,1F);
+
         for (int j = 0; j < 4; j++) {
             ItemStack Istack = getArmorItem(Minecraft.getInstance().player, j);
-            DrawUtil.drawText(stack, "DEBUG", new Vector(-20,-20), ColorE.WHITE,true, 1);
-            DrawUtil.drawRectangle(stack, Vector.NULL,new Vector(-20,-20), ColorE.WHITE);
+            DrawUtil.drawText(graphics, "DEBUG", new Vector(-20,-20), ColorE.WHITE,true, 1);
+            DrawUtil.drawRectangle(graphics, Vector.NULL,new Vector(-20,-20), ColorE.WHITE);
 
             enableItemRendering();
-            PoseStack itemStack = new PoseStack();
-            if (mode.get().equals("Horizontal")) DrawUtil.drawItemStack(itemStack,Istack, new Vector((xPos + 16 * i++), yPos));
-            if (mode.get().equals("Vertical")) DrawUtil.drawItemStack(itemStack,Istack, new Vector(xPos, yPos + 16 * i++));
+            if (mode.get().equals("Horizontal")) DrawUtil.drawItemStack(graphics,Istack, new Vector((xPos + 16 * i++), yPos));
+            if (mode.get().equals("Vertical")) DrawUtil.drawItemStack(graphics,Istack, new Vector(xPos, yPos + 16 * i++));
+            graphics.flush();
             disableItemRendering();
 
             /*
@@ -91,7 +94,7 @@ public class ArmorWindow extends GuiWindow {
                     if ((yI2 -= 4.5) <= yI2) continue;
                 }
             }
-            */
+            //*/
         }
     }
 

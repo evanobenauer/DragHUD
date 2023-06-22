@@ -1,7 +1,7 @@
 package com.ejo.draghud.event;
 
 import com.ejo.draghud.event.events.*;
-import org.util.glowlib.event.EventE;
+import com.ejo.glowlib.event.EventE;
 
 public class EventRegistry {
 

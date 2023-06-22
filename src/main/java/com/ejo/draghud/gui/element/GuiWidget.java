@@ -5,12 +5,14 @@ import com.ejo.draghud.gui.element.elements.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import org.util.glowlib.event.EventAction;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.misc.Container;
-import org.util.glowlib.util.NumberUtil;
+import com.ejo.glowlib.event.EventAction;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.misc.Container;
+import com.ejo.glowlib.util.NumberUtil;
 
 public abstract class GuiWidget {
 
@@ -39,23 +41,23 @@ public abstract class GuiWidget {
     }
 
 
-    public void draw(PoseStack stack, Vector mousePos) {
+    public void draw(GuiGraphics graphics, Vector mousePos) {
         mouseOver = updateMouseOver(mousePos);
-        drawWidget(stack, mousePos);
-        DrawUtil.drawRectangle(stack, getPos(), getSize(), new ColorE(255, 255, 255, (int) hoverFade));
+        drawWidget(graphics, mousePos);
+        DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(255, 255, 255, (int) hoverFade));
         if (isMouseOver() && !(this instanceof GuiWindow)) {
             try {
                 int xOffset = 6;
                 int yOffset = -8;
-                DrawUtil.drawRectangle(stack, mousePos.getAdded(xOffset,yOffset), new Vector(DrawUtil.getTextWidth(getSetting().getDescription()) + 4, 13), new ColorE(50, 50, 50, 150));
-                DrawUtil.drawText(stack,getSetting().getDescription(),mousePos.getAdded(2 + xOffset,2 + yOffset),ColorE.WHITE);
+                DrawUtil.drawRectangle(graphics, mousePos.getAdded(xOffset,yOffset), new Vector(DrawUtil.getTextWidth(getSetting().getDescription()) + 4, 13), new ColorE(50, 50, 50, 150));
+                DrawUtil.drawText(graphics,getSetting().getDescription(),mousePos.getAdded(2 + xOffset,2 + yOffset),ColorE.WHITE);
             } catch (Exception e) {
                 //
             }
         }
     }
 
-    protected abstract void drawWidget(PoseStack stack, Vector mousePos);
+    protected abstract void drawWidget(GuiGraphics graphics, Vector mousePos);
 
     public abstract void mousePressed(int button, int state, Vector mousePos);
 
@@ -89,11 +91,6 @@ public abstract class GuiWidget {
 
     public void setSize(Vector vector) {
         this.size.set(vector);
-        try {
-            ((GuiWindow)this).setAnchorCoordinates();
-        } catch (Exception e) {
-            //
-        }
     }
 
 

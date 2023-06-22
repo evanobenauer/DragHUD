@@ -5,11 +5,12 @@ import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.Key;
 import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import org.util.glowlib.math.MathE;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.util.NumberUtil;
+import com.ejo.glowlib.math.MathE;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.util.NumberUtil;
 
 public class GuiSlider<T extends Number> extends GuiWidget {
 
@@ -36,36 +37,36 @@ public class GuiSlider<T extends Number> extends GuiWidget {
 
 
     @Override
-    protected void drawWidget(PoseStack stack, Vector mousePos) {
+    protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
         //Updates the value of the setting based off of the current width of the slider
         if (isSliding()) {
-            double settingRange = getSetting().getMax().doubleValue() - getSetting().getMin().doubleValue();
+            double settingRange = getSetting().getMax() - getSetting().getMin();
 
             double sliderWidth = mousePos.getX() - getPos().getX();
             double sliderPercent = NumberUtil.getBoundValue(sliderWidth, 0, getSize().getX()).doubleValue() / getSize().getX();
 
-            double calculatedValue = getSetting().getMin().doubleValue() + sliderPercent * settingRange;
-            double val = MathE.roundDouble((((Math.round(calculatedValue / getSetting().getStep().doubleValue())) * getSetting().getStep().doubleValue())), 2); //Rounds the slider based off of the step val
+            double calculatedValue = getSetting().getMin() + sliderPercent * settingRange;
+            double val = MathE.roundDouble((((Math.round(calculatedValue / getSetting().getStep())) * getSetting().getStep())), 2); //Rounds the slider based off of the step val
 
             T value = getSetting().getType().equals("integer") ? (T) (Integer) (int) val : (T) (Double) val;
             getSetting().set(value);
         }
 
         //Draw the background
-        DrawUtil.drawRectangle(stack, getPos(), getSize(), new ColorE(50, 50, 50, 200));
+        DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(50, 50, 50, 200));
 
         //Draw the slider fill
-        double valueRange = getSetting().getMax().doubleValue() - getSetting().getMin().doubleValue();
-        double sliderWidth = getSize().getX() / valueRange * (getSetting().get().doubleValue() - getSetting().getMin().doubleValue());
+        double valueRange = getSetting().getMax() - getSetting().getMin();
+        double sliderWidth = getSize().getX() / valueRange * (getSetting().get().doubleValue() - getSetting().getMin());
         int border = (int)getSize().getX()/40;
-        DrawUtil.drawRectangle(stack, getPos().getAdded(new Vector(border,border)), new Vector(sliderWidth -border, getSize().getY() - border*2), new ColorE(0, 125, 200, 150));
+        DrawUtil.drawRectangle(graphics, getPos().getAdded(new Vector(border,border)), new Vector(sliderWidth -border, getSize().getY() - border*2), new ColorE(0, 125, 200, 150));
 
         //Draw the slider node
         int nodeWidth = (int) getSize().getY() / 4;
         double nodeX = sliderWidth - nodeWidth / 2f;
         if (nodeX + nodeWidth > getSize().getX()) nodeX = getSize().getX() - nodeWidth;
         if (nodeX < 0) nodeX = 0;
-        DrawUtil.drawRectangle(stack,getPos().getAdded(new Vector(nodeX,0)),new Vector(nodeWidth,getSize().getY()),new ColorE(0,125,200,255));
+        DrawUtil.drawRectangle(graphics,getPos().getAdded(new Vector(nodeX,0)),new Vector(nodeWidth,getSize().getY()),new ColorE(0,125,200,255));
 
         //Draw the slider text
         String title;
@@ -74,7 +75,10 @@ public class GuiSlider<T extends Number> extends GuiWidget {
         } else {
             title = getTitle() + ": " + String.format("%.2f", getSetting().get());
         }
-        DrawUtil.drawText(stack, title, getPos().getAdded(new Vector(border + 1, getSize().getY() / 2 - DrawUtil.getTextHeight() / 2 + 1)), ColorE.WHITE);
+        double scale = 1;
+        if (DrawUtil.getTextWidth(title) + border + 1 > getSize().getX()) scale = getSize().getX()/(DrawUtil.getTextWidth(title) + border + 1);
+
+        DrawUtil.drawText(graphics, title, getPos().getAdded(new Vector(border + 1, 1 + getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE,true,(float)scale);
     }
 
 

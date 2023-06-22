@@ -10,15 +10,15 @@ import com.ejo.draghud.util.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
 import org.lwjgl.glfw.GLFW;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.math.VectorMod;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.setting.Setting;
-import org.util.glowlib.setting.SettingManager;
-import org.util.glowlib.time.StopWatch;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.math.VectorMod;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.setting.Setting;
+import com.ejo.glowlib.setting.SettingManager;
+import com.ejo.glowlib.time.StopWatch;
 
 public abstract class GuiWindow extends GuiWidget {
 
@@ -51,11 +51,9 @@ public abstract class GuiWindow extends GuiWidget {
         this.anchorX = new Setting<>(manager,title + "_anchorX","NONE");
         this.anchorY = new Setting<>(manager,title + "_anchorY","NONE");
     }
-
-    StopWatch watch = new StopWatch();
-
+    
     @Override
-    public void drawWidget(PoseStack stack, Vector mousePos) {
+    public void drawWidget(GuiGraphics graphics, Vector mousePos) {
         if (Minecraft.getInstance().screen == DragHUD.getGuiManager().getGui()) {
             if (isDragging()) setPos(mousePos.getAdded(getDragOffset()));
 
@@ -75,38 +73,38 @@ public abstract class GuiWindow extends GuiWidget {
 
             //Draw borderlines
             if (getPos().getX() <= 0 && anchorX.get().equals("L")) {
-                DrawUtil.drawRectangle(stack,getPos(),new Vector(1,getSize().getY()),ColorE.RED);
+                DrawUtil.drawRectangle(graphics,getPos(),new Vector(1,getSize().getY()),ColorE.RED);
             }
             if (getPos().getX() + getSize().getX() >= getScreen().width && anchorX.get().equals("R")) {
-                DrawUtil.drawRectangle(stack,getPos().getAdded(getSize().getX() - 1,0),new Vector(1,getSize().getY()),ColorE.RED);
+                DrawUtil.drawRectangle(graphics,getPos().getAdded(getSize().getX() - 1,0),new Vector(1,getSize().getY()),ColorE.RED);
             }
             if (getPos().getY() <= 0 && anchorY.get().equals("U")) {
-                DrawUtil.drawRectangle(stack,getPos(),new Vector(getSize().getX(),1),ColorE.RED);
+                DrawUtil.drawRectangle(graphics,getPos(),new Vector(getSize().getX(),1),ColorE.RED);
             }
             if (getPos().getY() + getSize().getY() >= getScreen().height && anchorY.get().equals("D")) {
-                DrawUtil.drawRectangle(stack,getPos().getAdded(0,getSize().getY() - 1),new Vector(getSize().getX(),1),ColorE.RED);
+                DrawUtil.drawRectangle(graphics,getPos().getAdded(0,getSize().getY() - 1),new Vector(getSize().getX(),1),ColorE.RED);
             }
         }
 
         setAnchorCoordinates();
 
-        //TODO: Figure out how to refresh anchor coordinates without being inside of the gui
-
         //TODO: Add width/height scaling to anchored objects based on their orientation for easy window resizing
+        // Maybe don't? Anchoring is good for simply that, anchoring. It doesn't necessarily need scaling
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        drawWindow(stack, mousePos);
-        if (isSettingsOpen()) getSettingWindow().draw(stack, mousePos);
+        drawWindow(graphics, mousePos);
+        if (isSettingsOpen()) getSettingWindow().draw(graphics, mousePos);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 
         if (Minecraft.getInstance().screen == DragHUD.getGuiManager().getGui() && shouldDrawPin()) {
             if (isPinned()) {
-                DrawUtil.drawRectangle(stack, getPos(),new Vector(10,10), new ColorE(0,255,0,125));
+                DrawUtil.drawRectangle(graphics, getPos(),new Vector(10,10), new ColorE(0,255,0,125));
             } else {
-                DrawUtil.drawRectangle(stack, getPos(),new Vector(10,10), new ColorE(255,0,0,125));
+                DrawUtil.drawRectangle(graphics, getPos(),new Vector(10,10), new ColorE(255,0,0,125));
             }
         }
+
     }
 
     //This method will be called in the set position method every time the position is set
@@ -125,7 +123,7 @@ public abstract class GuiWindow extends GuiWidget {
     }
 
 
-    protected abstract void drawWindow(PoseStack stack, Vector mousePos);
+    protected abstract void drawWindow(GuiGraphics graphics, Vector mousePos);
 
 
     @Override
@@ -153,8 +151,9 @@ public abstract class GuiWindow extends GuiWidget {
             if (isMouseOver()) {
                 if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                     getDragOffset().set(getPos().getAdded(mousePos.getMultiplied(-1)));
-                    if (!Key.KEY_LSHIFT.isKeyDown()) setDragging(true);
+                    if (this instanceof SettingWindow || !Key.KEY_LSHIFT.isKeyDown()) setDragging(true);
 
+                    //If the window is not focused, it will not be able to detect if shift is down
                     if (!isSettingsOpen() && Key.KEY_LSHIFT.isKeyDown() && !(this instanceof SettingWindow)) {
                         this.settingWindow = new SettingWindow(getScreen(), this, new Vector(getScreen().width / 2f - 100 / 2f, getScreen().height / 2f - 100 / 2f)) {
                             @Override
@@ -178,12 +177,17 @@ public abstract class GuiWindow extends GuiWidget {
         if (isDragging() && state == 0) {
             setDragging(false);
         }
-
     }
 
     @Override
     public void keyPressed(int key, int scancode, int modifiers) {
         if (isSettingsOpen()) getSettingWindow().keyPressed(key,scancode,modifiers);
+    }
+
+    @Override
+    public void setSize(Vector vector) {
+        super.setSize(vector);
+        setAnchorCoordinates();
     }
 
     public boolean shouldDrawPin() {

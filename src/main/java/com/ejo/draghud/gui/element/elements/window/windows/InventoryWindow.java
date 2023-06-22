@@ -6,12 +6,13 @@ import com.ejo.draghud.util.SettingWidget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
 
 import java.util.List;
 
@@ -25,12 +26,12 @@ public class InventoryWindow extends GuiWindow {
     }
 
     @Override
-    protected void drawWindow(PoseStack stack, Vector mousePos) {
+    protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
         Vector adjust = new Vector(1,1);
         int itemSize = 16;
 
         RenderSystem.setShaderColor(1, 1, 1, transparency.get() / 255f);
-        renderChestInventory(stack,"Inventory",getPos().getAdded(adjust));
+        renderChestInventory(graphics,"Inventory",getPos().getAdded(adjust));
 
         List<ItemStack> list = Minecraft.getInstance().player.inventoryMenu.getItems();
 
@@ -41,20 +42,22 @@ public class InventoryWindow extends GuiWindow {
                 Vector pos = new Vector(
                         (getPos().getX() + adjust.getX() + 8) + ((itemSize + 2) * (l % 9)),
                         (getPos().getY() + adjust.getY() - 126) + (itemSize + 2) * (l / 9 + 1) + (itemSize + 2) * i);
-                DrawUtil.drawItemStack(stack,list.get(l),pos);
+                DrawUtil.drawItemStack(graphics,list.get(l),pos);
             }
         }
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.enableBlend();
     }
 
-    private void renderChestInventory(PoseStack stack, String title, Vector pos) {
+    private void renderChestInventory(GuiGraphics graphics, String title, Vector pos) {
         //INFO: Width = 176, Height = 80
         double x = pos.getX();
         double y = pos.getY();
         ResourceLocation GUI_TEXTURE = new ResourceLocation("textures/gui/container/shulker_box.png");
         GL11.glEnable(GL11.GL_BLEND);
-        DrawUtil.drawTexturedRect(stack,GUI_TEXTURE,pos.getAdded(new Vector(0,74)),new Vector(176,6),new Vector(0,160), new Vector(256,256));
-        DrawUtil.drawTexturedRect(stack,GUI_TEXTURE,pos,new Vector(176,74),Vector.NULL, new Vector(256,256));
-        DrawUtil.drawText(stack, title, new Vector(x + 7, y + 5), new ColorE(175, 175, 175, 220));
+        DrawUtil.drawTexturedRect(graphics.pose(),GUI_TEXTURE,pos.getAdded(new Vector(0,74)),new Vector(176,6),new Vector(0,160), new Vector(256,256));
+        DrawUtil.drawTexturedRect(graphics.pose(),GUI_TEXTURE,pos,new Vector(176,74),Vector.NULL, new Vector(256,256));
+        DrawUtil.drawText(graphics, title, new Vector(x + 7, y + 5), new ColorE(175, 175, 175, 220));
         GL11.glDisable(GL11.GL_BLEND);
     }
 

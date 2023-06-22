@@ -9,11 +9,12 @@ import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.util.glowlib.math.Vector;
-import org.util.glowlib.misc.ColorE;
-import org.util.glowlib.time.StopWatch;
+import com.ejo.glowlib.math.Vector;
+import com.ejo.glowlib.misc.ColorE;
+import com.ejo.glowlib.time.StopWatch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,17 +55,17 @@ public class GUI extends Screen {
     protected GUI(Component title) {
         super(title);
         addGuiElements(saveButton);
-        addGuiElements(armor,direction,fps,inventory,speed);
+        addGuiElements(inventory,armor,direction,fps,speed,coordinates);
         //addGuiElements(armor,coordinates,direction,entityData,entityList,fps,inventory,speed,tps);
         startAnimationThread();
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         Vector mousePos = new Vector(mouseX,mouseY);
 
         //DRAW BACKGROUND
-        DrawUtil.drawRectangle(stack,Vector.NULL, getSize(), new ColorE(0,0,0,100));
+        DrawUtil.drawRectangle(guiGraphics,Vector.NULL, getSize(), new ColorE(0,0,0,100));
         RenderSystem.setShaderColor(1,1,1,1);
 
         //MODIFY SAVE BUTTON
@@ -74,7 +75,7 @@ public class GUI extends Screen {
         //DRAW ALL ELEMENTS
         for (GuiWidget element : getGuiElementList()) {
             if (!element.isDrawn()) continue;
-            element.draw(stack, mousePos);
+            element.draw(guiGraphics, mousePos);
         }
     }
 
@@ -113,16 +114,16 @@ public class GUI extends Screen {
 
     private void startAnimationThread() {
         Thread animationThread = new Thread(() -> {
-            StopWatch watch = new StopWatch();
-            watch.start();
             while (true) {
-                if (watch.hasTimePassedMS(1)) {
+                try {
                     try {
-                        EventRegistry.EVENT_CALCULATE_ANIMATION.post();
-                    } catch (ConcurrentModificationException e) {
+                        Thread.sleep(1);
+                    } catch (Exception e) {
                         //
                     }
-                    watch.restart();
+                    EventRegistry.EVENT_CALCULATE_ANIMATION.post();
+                } catch (ConcurrentModificationException e) {
+                    e.printStackTrace();
                 }
             }
         });
