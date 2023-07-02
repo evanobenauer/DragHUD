@@ -14,13 +14,12 @@ repositories {
 
 //UDE FOR MAPPINGS https://linkie.shedaniel.dev/mappings?namespace=yarn&version=1.19.4&search=
 dependencies {
-    implementation 'com.github.evanobenauer:GlowLib:1.1.5'
-}
-
-dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation 'com.github.evanobenauer:GlowLib:1.1.5'
+    include 'com.github.evanobenauer:GlowLib:1.1.5'
 }
 
 base {

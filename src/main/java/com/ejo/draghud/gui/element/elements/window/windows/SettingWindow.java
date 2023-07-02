@@ -26,7 +26,7 @@ public class SettingWindow extends GuiWindow {
     public SettingWindow(Screen screen, GuiWindow parentWindow, Vector pos) {
         super(screen, parentWindow.getTitle() + "_settings", pos, new Vector(100,20));
         this.parentWindow = parentWindow;
-        this.closeButton = new GuiButton(getScreen(),"X",getPos(),getSize(),ColorE.RED,(args) -> {
+        this.closeButton = new GuiButton(getScreen(),"X",getPos(),getSize(),new ColorE(200,0,0),(args) -> {
             this.setDrawn(false);
             parentWindow.setSettingsOpen(false);
         });
