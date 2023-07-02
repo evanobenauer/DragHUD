@@ -36,14 +36,18 @@ public class GuiTextField extends GuiWidget {
 
     @Override
     protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
+        //Draw Background
         DrawUtil.drawRectangle(graphics,getPos(), getSize(), new ColorE(50,50,50,200));
 
+        //Draw Underline
         DrawUtil.drawRectangle(graphics,
                 getPos().getAdded(new Vector(2 + DrawUtil.getTextWidth(getTitle() + ": "), getSize().getY()- 2)),
                 getSize().getAdded(new Vector(- 4 - DrawUtil.getTextWidth(getTitle() + ": "),1-getSize().getY())),
                 ColorE.WHITE);
 
         String msg = getTitle() + ": " + (isTyping() ? "\u00A7a" : "") + getSetting().get();
+
+        //Draw Blinking Cursor
         if (isTyping()) {
             cursorTimer.start();
             if (cursorTimer.hasTimePassedS(1)) cursorTimer.restart();
@@ -53,6 +57,8 @@ public class GuiTextField extends GuiWidget {
                     : (getPos().getX() + 3 + DrawUtil.getTextWidth(getTitle() + ": ") + DrawUtil.getTextWidth(getSetting().get()));
             DrawUtil.drawRectangle(graphics, new Vector(x,getPos().getY() + 3),new Vector(1,getSize().getY() - 6),new ColorE(255,255,255,alpha));
         }
+
+        //Draw Text
         double scale = 1;
         if (DrawUtil.getTextWidth(msg) + 2 > getSize().getX()) scale = getSize().getX()/(DrawUtil.getTextWidth(msg) + 2);
         DrawUtil.drawText(graphics, msg, getPos().getAdded(new Vector(2, 1 + getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE,true,(float)scale);

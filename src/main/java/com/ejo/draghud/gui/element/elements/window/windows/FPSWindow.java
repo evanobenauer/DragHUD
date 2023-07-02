@@ -22,7 +22,6 @@ public class FPSWindow extends GuiWindow {
 
     @Override
     protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
-        RenderSystem.setShaderColor(1,1,1,1);
         String label = (this.label.get() ? "FPS " : "");
         String text =  (Minecraft.getInstance().fpsString.substring(0,3)).replace("/","").replace("f","").replace(" ","");
 

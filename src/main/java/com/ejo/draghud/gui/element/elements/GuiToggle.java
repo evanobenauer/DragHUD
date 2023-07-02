@@ -37,8 +37,13 @@ public class GuiToggle extends GuiWidget {
 
     @Override
     protected void drawWidget(GuiGraphics graphics, Vector mousePos) {
+        //Draw Background
         DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(50, 50, 50, 200));
+
+        //Draw Fill
         DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(0, 125, 200, (int) toggleFade));
+
+        //Draw Text
         double scale = 1;
         if (DrawUtil.getTextWidth(getTitle()) + 2 > getSize().getX()) scale = getSize().getX()/(DrawUtil.getTextWidth(getTitle()) + 2);
         DrawUtil.drawText(graphics, getTitle(), getPos().getAdded(new Vector(2, 1 + getSize().getY() / 2 - DrawUtil.getTextHeight() / 2)), ColorE.WHITE,true,(float)scale);

@@ -3,6 +3,7 @@ package com.ejo.draghud.gui.element.elements.window.windows;
 import com.ejo.draghud.gui.element.elements.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
+import com.ejo.glowlib.math.VectorMod;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -25,55 +26,45 @@ public class ArmorWindow extends GuiWindow {
 
     @Override
     protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
-        boolean drawBar = Minecraft.getInstance().screen == getScreen();
-        double xPos = getPos().getX();
-        double yPos = getPos().getY() - 1;
-        int i = 0;
+        VectorMod nPos = new VectorMod((int)getPos().getX(),(int)getPos().getY());
 
+        Vector texSize = new Vector(16,16);
+        Vector addVec = Vector.NULL;
         if (mode.get().equals("Horizontal")) {
-            setSize(new Vector(65,15));
+            setSize(new Vector(65,16));
+            addVec = new Vector(texSize.getX(),0);
         }
         if (mode.get().equals("Vertical")) {
-            xPos += 1;
-            setSize(new Vector(18,63));
+            setSize(new Vector(17,63));
+            nPos.add(new Vector(1,0));
+            addVec = new Vector(0,texSize.getY());
         }
-        if (drawBar) {
+
+        if (Minecraft.getInstance().screen == getScreen()) {
             ResourceLocation helmet = new ResourceLocation("textures/item/empty_armor_slot_helmet.png");
             ResourceLocation chestplate = new ResourceLocation("textures/item/empty_armor_slot_chestplate.png");
             ResourceLocation leggings = new ResourceLocation("textures/item/empty_armor_slot_leggings.png");
             ResourceLocation boots = new ResourceLocation("textures/item/empty_armor_slot_boots.png");
 
             RenderSystem.setShaderColor(.2F,.2F,.2F,1F);
-            double separation = 16;
-            Vector texSize = new Vector(16,16);
-            if (mode.get().equals("Horizontal")) {
-                DrawUtil.drawTexturedRect(helmet, xPos, yPos, 16, 16);
-                DrawUtil.drawTexturedRect(chestplate, xPos + separation, yPos, 16, 16);
-                separation += 16;
-                DrawUtil.drawTexturedRect(leggings, xPos + separation, yPos, 16, 16);
-                separation += 16;
-                DrawUtil.drawTexturedRect(boots, xPos + separation, yPos, 16, 16);
-            }
-            if (mode.get().equals("Vertical")) {
-                DrawUtil.drawTexturedRect(helmet, xPos, yPos, 16, 16);
-                DrawUtil.drawTexturedRect(chestplate, xPos, yPos + separation, 16, 16);
-                separation += 16;
-                DrawUtil.drawTexturedRect(leggings, xPos, yPos + separation, 16, 16);
-                separation += 16;
-                DrawUtil.drawTexturedRect(boots, xPos, yPos + separation, 16, 16);
-            }
 
+            DrawUtil.drawTexturedRect(helmet, nPos, texSize);
+            nPos.add(addVec);
+            DrawUtil.drawTexturedRect(chestplate, nPos, texSize);
+            nPos.add(addVec);
+            DrawUtil.drawTexturedRect(leggings, nPos, texSize);
+            nPos.add(addVec);
+            DrawUtil.drawTexturedRect(boots, nPos, texSize);
+
+            RenderSystem.setShaderColor(1F,1F,1F,1F);
+            nPos.add(addVec.getMultiplied(-3));
         }
-        RenderSystem.setShaderColor(1F,1F,1F,1F);
 
         for (int j = 0; j < 4; j++) {
             ItemStack Istack = getArmorItem(Minecraft.getInstance().player, j);
-            DrawUtil.drawText(graphics, "DEBUG", new Vector(-20,-20), ColorE.WHITE,true, 1);
-            DrawUtil.drawRectangle(graphics, Vector.NULL,new Vector(-20,-20), ColorE.WHITE);
-
             enableItemRendering();
-            if (mode.get().equals("Horizontal")) DrawUtil.drawItemStack(graphics,Istack, new Vector((xPos + 16 * i++), yPos));
-            if (mode.get().equals("Vertical")) DrawUtil.drawItemStack(graphics,Istack, new Vector(xPos, yPos + 16 * i++));
+            DrawUtil.drawItemStack(graphics,Istack,nPos);
+            nPos.add(addVec);
             graphics.flush();
             disableItemRendering();
 

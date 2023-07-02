@@ -31,7 +31,6 @@ public abstract class GuiWidget {
         hoverFade = getNextFade(isMouseOver(), hoverFade, 2, 50, 1f);
     });
 
-
     public GuiWidget(Screen screen, Vector pos, Vector size, boolean shouldDraw) {
         this.screen = screen;
         this.pos = new Container<>(pos);
@@ -40,11 +39,14 @@ public abstract class GuiWidget {
         this.ANIMATION_HOVER_FADE.subscribe();
     }
 
-
     public void draw(GuiGraphics graphics, Vector mousePos) {
         mouseOver = updateMouseOver(mousePos);
         drawWidget(graphics, mousePos);
+
+        //Draw Hover Fade
         DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(255, 255, 255, (int) hoverFade));
+
+        //Draw Tooltip
         if (isMouseOver() && !(this instanceof GuiWindow)) {
             try {
                 int xOffset = 6;
@@ -62,17 +64,6 @@ public abstract class GuiWidget {
     public abstract void mousePressed(int button, int state, Vector mousePos);
 
     public abstract void keyPressed(int key, int scancode, int modifiers);
-
-
-    public float getNextFade(boolean condition, float fade, int min, int max, float speed) {
-        if (condition) {
-            if (fade < max) fade += speed;
-        } else {
-            if (fade > min) fade -= speed;
-        }
-        fade = NumberUtil.getBoundValue(fade,0,255).floatValue();
-        return fade;
-    }
 
 
     protected boolean updateMouseOver(Vector mousePos) {
@@ -93,6 +84,16 @@ public abstract class GuiWidget {
         this.size.set(vector);
     }
 
+
+    public float getNextFade(boolean condition, float fade, int min, int max, float speed) {
+        if (condition) {
+            if (fade < max) fade += speed;
+        } else {
+            if (fade > min) fade -= speed;
+        }
+        fade = NumberUtil.getBoundValue(fade,0,255).floatValue();
+        return fade;
+    }
 
     public boolean isMouseOver() {
         return mouseOver;
