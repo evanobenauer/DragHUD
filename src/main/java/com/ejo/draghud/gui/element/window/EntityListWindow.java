@@ -1,16 +1,8 @@
-package com.ejo.draghud.gui.element.elements.window.windows;
+package com.ejo.draghud.gui.element.window;
 
-import com.ejo.draghud.gui.element.elements.window.GuiWindow;
-import com.google.common.collect.Maps;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import com.ejo.glowlib.math.Vector;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
 
 public class EntityListWindow extends GuiWindow {
 

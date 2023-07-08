@@ -1,11 +1,9 @@
 package com.ejo.draghud.gui.element;
 
 import com.ejo.draghud.event.EventRegistry;
-import com.ejo.draghud.gui.element.elements.window.GuiWindow;
+import com.ejo.draghud.gui.element.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import com.ejo.glowlib.event.EventAction;

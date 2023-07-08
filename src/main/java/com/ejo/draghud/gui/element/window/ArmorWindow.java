@@ -1,11 +1,9 @@
-package com.ejo.draghud.gui.element.elements.window.windows;
+package com.ejo.draghud.gui.element.window;
 
-import com.ejo.draghud.gui.element.elements.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
 import com.ejo.glowlib.math.VectorMod;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -13,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import com.ejo.glowlib.math.Vector;
-import com.ejo.glowlib.misc.ColorE;
 
 public class ArmorWindow extends GuiWindow {
 

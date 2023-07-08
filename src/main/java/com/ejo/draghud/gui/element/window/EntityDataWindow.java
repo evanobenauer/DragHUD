@@ -1,7 +1,5 @@
-package com.ejo.draghud.gui.element.elements.window.windows;
+package com.ejo.draghud.gui.element.window;
 
-import com.ejo.draghud.gui.element.elements.window.GuiWindow;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import com.ejo.glowlib.math.Vector;

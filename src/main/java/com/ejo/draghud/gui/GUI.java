@@ -2,19 +2,17 @@ package com.ejo.draghud.gui;
 
 import com.ejo.draghud.DragHUD;
 import com.ejo.draghud.event.EventRegistry;
-import com.ejo.draghud.gui.element.elements.*;
+import com.ejo.draghud.gui.element.GuiButton;
 import com.ejo.draghud.gui.element.GuiWidget;
-import com.ejo.draghud.gui.element.elements.window.windows.*;
+import com.ejo.draghud.gui.element.window.*;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import com.ejo.glowlib.math.Vector;
 import com.ejo.glowlib.misc.ColorE;
-import com.ejo.glowlib.time.StopWatch;
 
 import java.util.ArrayList;
 import java.util.Arrays;

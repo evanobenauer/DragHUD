@@ -1,4 +1,4 @@
-package com.ejo.draghud.gui.element.elements;
+package com.ejo.draghud.gui.element;
 
 import com.ejo.draghud.gui.element.GuiWidget;
 import com.ejo.draghud.util.DrawUtil;

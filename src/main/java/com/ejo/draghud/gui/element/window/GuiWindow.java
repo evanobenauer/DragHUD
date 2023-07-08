@@ -1,14 +1,11 @@
-package com.ejo.draghud.gui.element.elements.window;
+package com.ejo.draghud.gui.element.window;
 
 import com.ejo.draghud.DragHUD;
 import com.ejo.draghud.gui.element.GuiWidget;
-import com.ejo.draghud.gui.element.elements.window.windows.SettingWindow;
 import com.ejo.draghud.util.Key;
 import com.ejo.draghud.util.DrawUtil;
-import com.ejo.draghud.util.SettingWidget;
 import com.ejo.draghud.util.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,7 +15,6 @@ import com.ejo.glowlib.math.VectorMod;
 import com.ejo.glowlib.misc.ColorE;
 import com.ejo.glowlib.setting.Setting;
 import com.ejo.glowlib.setting.SettingManager;
-import com.ejo.glowlib.time.StopWatch;
 
 public abstract class GuiWindow extends GuiWidget {
 
