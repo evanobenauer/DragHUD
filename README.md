@@ -1,6 +1,7 @@
 # DragHUD
 
 DragHUD is a simple Heads Up Display mod for minecraft.
+The mod is built using Fabric modloader.
 There are multiple HUD windows that can be moved around the screen and modified to your liking
 
 The movable HUD elements include: FPS, TPS, Coordinates, Speed, Inventory, Armor, Direction, and more to come.
