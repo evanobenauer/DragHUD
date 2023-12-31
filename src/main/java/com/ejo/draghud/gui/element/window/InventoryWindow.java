@@ -17,19 +17,26 @@ import java.util.List;
 public class InventoryWindow extends GuiWindow {
 
     public SettingWidget<Integer> transparency;
+    public SettingWidget<Double> scale;
 
     public InventoryWindow(Screen screen, Vector pos) {
         super(screen,"Inventory" ,pos, new Vector(178,82));
         transparency = new SettingWidget<>(this,"Transparency","The transparency of the inventory window",125,0,255,1);
+        scale = new SettingWidget<>(this,"Scale","The scale of the inventory window",1d,.1d,1d,.1d);
     }
 
     @Override
     protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
-        Vector adjust = new Vector(1,1);
         int itemSize = 16;
 
         RenderSystem.setShaderColor(1, 1, 1, transparency.get() / 255f);
-        renderChestInventory(graphics,"Inventory",getPos().getAdded(adjust));
+        float scale = this.scale.get().floatValue();
+        setSize(new Vector(178,82).getMultiplied(scale));
+        graphics.pose().scale(scale,scale,1f);
+
+        Vector adjustedPos = getPos().getAdded(1,1).getMultiplied(1/scale);
+
+        renderChestInventory(graphics,"Inventory",adjustedPos);
 
         List<ItemStack> list = Minecraft.getInstance().player.inventoryMenu.getItems();
 
@@ -38,13 +45,14 @@ public class InventoryWindow extends GuiWindow {
         for (int l = 0; l < size; l++) {
             if (l > 8 && l < 36) {
                 Vector pos = new Vector(
-                        (getPos().getX() + adjust.getX() + 8) + ((itemSize + 2) * (l % 9)),
-                        (getPos().getY() + adjust.getY() - 126) + (itemSize + 2) * (l / 9 + 1) + (itemSize + 2) * i);
+                        (adjustedPos.getX() + 8) + ((itemSize + 2) * (l % 9)),
+                        (adjustedPos.getY() - 126) + (itemSize + 2) * (l / 9 + 1) + (itemSize + 2) * i);
                 DrawUtil.drawItemStack(graphics,list.get(l),pos);
             }
         }
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.enableBlend();
+        graphics.pose().scale(1 / scale,1 / scale,1f);
     }
 
     private void renderChestInventory(GuiGraphics graphics, String title, Vector pos) {

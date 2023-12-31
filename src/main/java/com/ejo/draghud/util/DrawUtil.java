@@ -26,9 +26,10 @@ public class DrawUtil {
     public static void drawText(GuiGraphics graphics, String text, Vector pos, ColorE color, boolean drawShadow, float scale) {
         float x = (float) pos.getX();
         float y = (float) pos.getY();
-        PoseStack stack = new PoseStack();
+        PoseStack stack = graphics.pose();
         stack.scale(scale,scale,1);
         Util.MC.font.drawInBatch(text, x*1/scale, y*1/scale, color.getHash(), drawShadow, stack.last().pose(), graphics.bufferSource(), Font.DisplayMode.SEE_THROUGH, 0, 15728880, Util.MC.font.isBidirectional());
+        stack.scale(1/scale,1/scale,1);
         graphics.flush();
     }
 
@@ -126,8 +127,8 @@ public class DrawUtil {
         drawTexturedRect(new PoseStack(),texture,new Vector(x,y),new Vector(width,height),new Vector(0,0),new Vector(width,height));
     }
 
-    public static void drawTexturedRect(ResourceLocation texture, Vector pos, Vector size) {
-        drawTexturedRect(new PoseStack(),texture,pos,size,Vector.NULL,size);
+    public static void drawTexturedRect(GuiGraphics graphics, ResourceLocation texture, Vector pos, Vector size) {
+        drawTexturedRect(graphics.pose(),texture,pos,size,Vector.NULL,size);
     }
 
 
@@ -136,5 +137,9 @@ public class DrawUtil {
         int y = (int) pos.getY();
         graphics.renderItem(stack,x,y);
         graphics.renderItemDecorations(Util.MC.font,stack,x,y);
+    }
+
+    public static void scaleStart(PoseStack stack, float scale) {
+        stack.scale(scale,scale,1);
     }
 }

@@ -15,27 +15,35 @@ import com.ejo.glowlib.math.Vector;
 public class ArmorWindow extends GuiWindow {
 
     public SettingWidget<String> mode;
+    public SettingWidget<Double> scale;
 
     public ArmorWindow(Screen screen, Vector pos) {
         super(screen, "Armor",pos, new Vector(65,15));
-        mode = new SettingWidget<>(this,"Mode","The direction the armor is rendered","Horizontal","Horizontal","Vertical");
+        this.mode = new SettingWidget<>(this,"Mode","The direction the armor is rendered","Horizontal","Horizontal","Vertical");
+        this.scale = new SettingWidget<>(this,"Scale","The scale of the armor",1d,.1d,1d,.1d);
     }
 
     @Override
     protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
         VectorMod nPos = new VectorMod((int)getPos().getX(),(int)getPos().getY());
 
+        float scale = this.scale.get().floatValue();
+        setSize(new Vector(178,82).getMultiplied(scale));
+        graphics.pose().scale(scale,scale,1f);
+
         Vector texSize = new Vector(16,16);
         Vector addVec = Vector.NULL;
         if (mode.get().equals("Horizontal")) {
-            setSize(new Vector(65,16));
+            setSize(new Vector(65,16).getMultiplied(scale));
             addVec = new Vector(texSize.getX(),0);
         }
         if (mode.get().equals("Vertical")) {
-            setSize(new Vector(17,63));
+            setSize(new Vector(17,63).getMultiplied(scale));
             nPos.add(new Vector(1,0));
             addVec = new Vector(0,texSize.getY());
         }
+
+        nPos.multiply(1 / scale);
 
         if (Minecraft.getInstance().screen == getScreen()) {
             ResourceLocation helmet = new ResourceLocation("textures/item/empty_armor_slot_helmet.png");
@@ -45,13 +53,13 @@ public class ArmorWindow extends GuiWindow {
 
             RenderSystem.setShaderColor(.2F,.2F,.2F,1F);
 
-            DrawUtil.drawTexturedRect(helmet, nPos, texSize);
+            DrawUtil.drawTexturedRect(graphics,helmet, nPos, texSize);
             nPos.add(addVec);
-            DrawUtil.drawTexturedRect(chestplate, nPos, texSize);
+            DrawUtil.drawTexturedRect(graphics,chestplate, nPos, texSize);
             nPos.add(addVec);
-            DrawUtil.drawTexturedRect(leggings, nPos, texSize);
+            DrawUtil.drawTexturedRect(graphics,leggings, nPos, texSize);
             nPos.add(addVec);
-            DrawUtil.drawTexturedRect(boots, nPos, texSize);
+            DrawUtil.drawTexturedRect(graphics,boots, nPos, texSize);
 
             RenderSystem.setShaderColor(1F,1F,1F,1F);
             nPos.add(addVec.getMultiplied(-3));
@@ -84,6 +92,7 @@ public class ArmorWindow extends GuiWindow {
             }
             //*/
         }
+        graphics.pose().scale(1 / scale,1 / scale,1f);
     }
 
     public static void enableItemRendering() {
