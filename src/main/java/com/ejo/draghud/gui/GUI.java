@@ -53,21 +53,21 @@ public class GUI extends Screen {
     protected GUI(Component title) {
         super(title);
         addGuiElements(saveButton);
-        addGuiElements(inventory,armor,direction,fps,speed,coordinates);
+        addGuiElements(inventory,armor,direction,fps,speed,coordinates, entityList);
         //addGuiElements(armor,coordinates,direction,entityData,entityList,fps,inventory,speed,tps);
         startAnimationThread();
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        Vector mousePos = new Vector(mouseX,mouseY);
+        Vector mousePos = new Vector(mouseX, mouseY);
 
         //DRAW BACKGROUND
-        DrawUtil.drawRectangle(guiGraphics,Vector.NULL, getSize(), new ColorE(0,0,0,100));
-        RenderSystem.setShaderColor(1,1,1,1);
+        DrawUtil.drawRectangle(guiGraphics, Vector.NULL, getSize(), new ColorE(0, 0, 0, 100));
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         //MODIFY SAVE BUTTON
-        Vector saveButtonPos = new Vector(getSize().getX()-this.saveButton.getSize().getX() - 2,getSize().getY()-this.saveButton.getSize().getY() - 2);
+        Vector saveButtonPos = new Vector(getSize().getX() - this.saveButton.getSize().getX() - 2, getSize().getY() - this.saveButton.getSize().getY() - 2);
         this.saveButton.setPos(saveButtonPos);
 
         //DRAW ALL ELEMENTS

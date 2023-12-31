@@ -21,8 +21,8 @@ public class GuiManager {
         return gui;
     }
 
-    public GUI instantiateGUI() {
-        return gui = new GUI(Component.translatable("GUI"));
+    public void instantiateGUI() {
+        gui = new GUI(Component.translatable("GUI"));
     }
 
 

@@ -4,12 +4,12 @@ import com.ejo.draghud.event.EventRegistry;
 import com.ejo.draghud.gui.element.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
+import com.ejo.glowlib.setting.Container;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import com.ejo.glowlib.event.EventAction;
 import com.ejo.glowlib.math.Vector;
 import com.ejo.glowlib.misc.ColorE;
-import com.ejo.glowlib.misc.Container;
 import com.ejo.glowlib.util.NumberUtil;
 
 public abstract class GuiWidget {

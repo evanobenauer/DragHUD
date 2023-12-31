@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.DisplayRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,7 @@ public class DrawUtil {
         float y = (float) pos.getY();
         PoseStack stack = new PoseStack();
         stack.scale(scale,scale,1);
-        Util.MC.font.drawInBatch(text, x*1/scale, y*1/scale, color.getHash(), drawShadow, stack.last().pose(), graphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880, Util.MC.font.isBidirectional());
+        Util.MC.font.drawInBatch(text, x*1/scale, y*1/scale, color.getHash(), drawShadow, stack.last().pose(), graphics.bufferSource(), Font.DisplayMode.SEE_THROUGH, 0, 15728880, Util.MC.font.isBidirectional());
         graphics.flush();
     }
 

@@ -11,39 +11,43 @@ import com.ejo.glowlib.misc.ColorE;
 import com.ejo.glowlib.setting.Setting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class SettingWindow extends GuiWindow {
 
-    private final ArrayList<GuiWidget> widgetList = new ArrayList<>();
+    private ArrayList<GuiWidget> widgetList = new ArrayList<>();
 
     private final GuiButton closeButton;
     private final GuiWindow parentWindow;
 
     public SettingWindow(Screen screen, GuiWindow parentWindow, Vector pos) {
-        super(screen, parentWindow.getTitle() + "_settings", pos, new Vector(100,20));
+        super(screen, parentWindow.getTitle() + "_settings", pos, new Vector(100, 20));
         this.parentWindow = parentWindow;
-        this.closeButton = new GuiButton(getScreen(),"X",getPos(),getSize(),new ColorE(200,0,0),(args) -> {
+        this.closeButton = new GuiButton(getScreen(), "X", getPos(), getSize(), new ColorE(200, 0, 0), (args) -> {
             this.setDrawn(false);
             parentWindow.setSettingsOpen(false);
         });
 
-        //TODO: Figure out how to order setting widgets
         for (Setting<?> setting : DragHUD.getSettingManager().getSettingList().values()) {
-            if (setting instanceof SettingWidget settingWidget) {
-                if (settingWidget.getWindow().getTitle().equals(parentWindow.getTitle())) {
-                    if (settingWidget.getModes().size() > 0)
-                        widgetList.add(new GuiModeCycle<>(getScreen(),settingWidget,Vector.NULL,Vector.NULL,DrawUtil.HUD_BLUE));
-                    else if (settingWidget.getType().equals("boolean"))
-                        widgetList.add(new GuiToggle(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
-                    else if (settingWidget.getType().equals("integer"))
-                        widgetList.add(new GuiSlider<Integer>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
-                    else if (settingWidget.getType().equals("double") || settingWidget.getType().equals("float"))
-                        widgetList.add(new GuiSlider<Double>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
-                    else if (settingWidget.getType().equals("string"))
-                        widgetList.add(new GuiTextField(getScreen(), settingWidget, Vector.NULL, Vector.NULL));
+            if (setting instanceof SettingWidget settingWidget && settingWidget.getWindow().getTitle().equals(parentWindow.getTitle())) {
+
+                if (settingWidget.getModes().size() > 0) {
+                    widgetList.add(new GuiModeCycle<>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    continue;
+                }
+                switch (settingWidget.getType()) {
+                    case "boolean" -> widgetList.add(new GuiToggle(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    case "integer" -> widgetList.add(new GuiSlider<Integer>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    case "double", "float" -> widgetList.add(new GuiSlider<Double>(getScreen(), settingWidget, Vector.NULL, Vector.NULL, DrawUtil.HUD_BLUE));
+                    case "string" -> widgetList.add(new GuiTextField(getScreen(), settingWidget, Vector.NULL, Vector.NULL));
                 }
             }
         }
+
+        GuiWidget[] widgets = widgetList.toArray(new GuiWidget[0]);
+        Arrays.sort(widgets, new WidgetComparator());
+        this.widgetList = new ArrayList<>(Arrays.asList(widgets));
     }
 
 
@@ -94,7 +98,63 @@ public class SettingWindow extends GuiWindow {
         }
     }
 
+    private static class WidgetComparator implements Comparator<GuiWidget> {
+
+        @Override
+        public int compare(GuiWidget widget1, GuiWidget widget2) {
+            int typeWeight = getTypeWeight(widget1) - getTypeWeight(widget2);
+            int letterWeight = getIndexFromLetter(widget1.getSetting().getName().charAt(0)) - getIndexFromLetter(widget2.getSetting().getName().charAt(0));
+
+            return typeWeight + letterWeight;
+        }
+
+        private int getIndexFromLetter(char letter) {
+            return switch (letter) {
+                case 'a', 'A' -> 0;
+                case 'b', 'B' -> 1;
+                case 'c', 'C' -> 2;
+                case 'd', 'D' -> 3;
+                case 'e', 'E' -> 4;
+                case 'f', 'F' -> 5;
+                case 'g', 'G' -> 6;
+                case 'h', 'H' -> 7;
+                case 'i', 'I' -> 8;
+                case 'j', 'J' -> 9;
+                case 'k', 'K' -> 10;
+                case 'l', 'L' -> 11;
+                case 'm', 'M' -> 12;
+                case 'n', 'N' -> 13;
+                case 'o', 'O' -> 14;
+                case 'p', 'P' -> 15;
+                case 'q', 'Q' -> 16;
+                case 'r', 'R' -> 17;
+                case 's', 'S' -> 18;
+                case 't', 'T' -> 19;
+                case 'u', 'U' -> 20;
+                case 'v', 'V' -> 21;
+                case 'w', 'W' -> 22;
+                case 'x', 'X' -> 23;
+                case 'y', 'Y' -> 24;
+                case 'z', 'Z' -> 25;
+                default -> -1;
+            };
+        }
+
+        private int getTypeWeight(GuiWidget widget) {
+            //Lower number = higher in list
+            int weightMul = 1000;
+            if (widget.getSetting().getModes().size() > 0) return weightMul;
+            return weightMul * switch (widget.getSetting().getType()) {
+                case "boolean" -> 4;
+                case "integer", "float", "double" -> 2;
+                case "string" -> 3;
+                default -> -1;
+            };
+        }
+    }
+
     public GuiWindow getParentWindow() {
         return parentWindow;
     }
+
 }

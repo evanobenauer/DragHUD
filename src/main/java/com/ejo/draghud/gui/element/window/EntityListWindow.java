@@ -1,110 +1,59 @@
 package com.ejo.draghud.gui.element.window;
 
+import com.ejo.draghud.util.DrawUtil;
+import com.ejo.draghud.util.SettingWidget;
+import com.ejo.draghud.util.Util;
+import com.ejo.glowlib.misc.ColorE;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import com.ejo.glowlib.math.Vector;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class EntityListWindow extends GuiWindow {
 
+    private final SettingWidget<Boolean> label;
+    private final SettingWidget<Integer> range;
+
+
     public EntityListWindow(Screen screen, Vector pos) {
         super(screen, "EntityList", pos, Vector.NULL);
+        this.label = new SettingWidget<>(this,"Label","Show the label",true);
+        this.range = new SettingWidget<>(this,"Range","Block range away from player of entities",64,1,200,1);
     }
 
 
     @Override
     protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
-        /*
-        setSize(new Vector(73,10));
-
-        double xv = getX() + 2;
-        double yv = getY() + 2;
-        if ((isPinned.getBoolean() || MC.currentScreen instanceof ClickGUI) && HUD.entityListEnabled.getBoolean())
-            try {
-                ArrayList<String> nameList = new ArrayList<>();
-                Map<String, Integer> entityAmountList = Maps.newHashMap();
-                int itemAmount = 0;
-                int playerAmount = 0;
-                int dogAmount = 0;
-                int catAmount = 0;
-                for (Entity entity : MC.world.getAllEntities()) {
-                    if (!(entity.getDistance(MC.player) > HUD.entityListRadius.getInt())) {
-                        if (!(entity instanceof PlayerEntity) && !(entity instanceof ItemEntity) && !(entity instanceof WolfEntity)) {
-                            String name = entity.getName().getString();
-                            if (!nameList.contains(name)) {
-                                entityAmountList.put(name, 1);
-                                nameList.add(entity.getName().getString());
-                            } else entityAmountList.replace(name, entityAmountList.get(name) + 1);
-                        } else if (entity instanceof ItemEntity) {
-                            if (!nameList.contains("Item")) {
-                                itemAmount = 1;
-                                nameList.add("Item");
-                            } else itemAmount += 1;
-                            entityAmountList.put("Item", itemAmount);
-                        } else if (entity instanceof PlayerEntity) {
-                            if (!nameList.contains("Player")) {
-                                playerAmount = 1;
-                                nameList.add("Player");
-                            } else playerAmount += 1;
-                            entityAmountList.put("Player", playerAmount);
-                            //This is because of brendan's dog/cat army
-                        } else if (entity instanceof WolfEntity) {
-                            if (!nameList.contains("Wolf")) {
-                                dogAmount = 1;
-                                nameList.add("Wolf");
-                            } else dogAmount += 1;
-                            entityAmountList.put("Wolf", dogAmount);
-                        } else if (entity instanceof CatEntity) {
-                            if (!nameList.contains("Cat")) {
-                                catAmount = 1;
-                                nameList.add("Cat");
-                            } else catAmount += 1;
-                            entityAmountList.put("Cat", catAmount);
-                        }
-                    }
-                }
-                if (HUD.entityListOrder.getMode().equals("ABC")) Collections.sort(nameList);
-                if (HUD.entityListOrder.getMode().equals("Length")) nameList.sort(Comparator.comparing(MC.fontRenderer::getStringWidth).reversed());
-
-                for (String name2 : nameList) {
-                    if (HUD.entityListSide.getMode().equals("Left")) {
-                        TextUtils.drawText(FONT, name2 + " \u00A7b(" + entityAmountList.get(name2) + ")", xv, yv, true, Colors.WHITE, 1);
-                        if (HUD.entityListDirection.getMode().equals("Up")) {
-                            yv -= 10;
-                            setHeight(13);
-                        }
-                        if (HUD.entityListDirection.getMode().equals("Down")) {
-                            yv += 10;
-                            setHeight(getHeight() + 10);
-                        }
-                    }
-                    if (HUD.entityListSide.getMode().equals("Right")) {
-                        setWidth(73);
-                        TextUtils.drawText(FONT, "\u00A7b(" + entityAmountList.get(name2) + ") \u00A7r\u00A7f" + name2, xv + getWidth() - TextUtils.getStringWidth("\u00A7b(" + entityAmountList.get(name2) + ") \u00A7r\u00A7f" + name2) - 6, yv, true, Colors.WHITE, 1);
-                        if (HUD.entityListDirection.getMode().equals("Up")) {
-                            yv -= 10;
-                            setHeight(13);
-                        }
-                        if (HUD.entityListDirection.getMode().equals("Down")) {
-                            yv += 10;
-                            setHeight(getHeight() + 10);
-                        }
-                    }
-                }
-                try {
-                    setWidth((int) (5 + TextUtils.getStringWidth(FONT, TextUtils.getLongestString(nameList), 1) + TextUtils.getStringWidth(FONT, " (" + entityAmountList.get(TextUtils.getLongestString(nameList)) + ")", 1)));
-                    if (HUD.entityListSide.getMode().equals("Right")) setWidth(73);
-                } catch (Exception e) {
-                    setWidth(73);
-                    setHeight(10);
-                }
-            } catch (Exception e) {
+        setSize(new Vector(72,12));
+        assert Util.MC.level != null;
+        int yOff = 0;
+        LinkedHashMap<String, Integer> entityNameList = new LinkedHashMap<>();
+        for (Entity entity : Util.MC.level.entitiesForRendering()) {
+            if (entity.distanceTo(Util.MC.player) > range.get()) continue;
+            if (entity instanceof LocalPlayer) continue;
+            String entityName = entity.getClass().getSimpleName();
+            if (entityNameList.containsKey(entityName)) {
+                entityNameList.put(entityName,entityNameList.get(entityName) + 1);
+                continue;
             }
-        else {
-            setSize(new Vector(73,12));
+            entityNameList.put(entityName,1);
         }
 
-        if (!HUD.entityListEnabled.getBoolean()) RenderUtils2D.drawRect(getX(),getY(),getWidth(),getHeight(),Colors.toRGBA(255,0,0,100));
+        if (label.get()) {
+            DrawUtil.drawText(graphics,"Entity List:",getPos().getAdded(2,2), DrawUtil.HUD_LABEL);
+            yOff += 12;
+        }
 
-         */
+        for (Map.Entry<String, Integer> set : entityNameList.entrySet()) {
+            DrawUtil.drawDualColorText(graphics,set.getKey(),(set.getValue() == 1) ? "" : "(" + set.getValue() + ")",getPos().getAdded(2,2 + yOff), ColorE.WHITE,ColorE.BLUE.green(190));
+            yOff += 12;
+            setSize(new Vector(72, yOff));
+        }
     }
 }
