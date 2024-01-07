@@ -18,6 +18,8 @@ import com.ejo.glowlib.misc.ColorE;
 
 import java.util.logging.Level;
 
+import static com.ejo.draghud.DragHUD.MC;
+
 public class DrawUtil {
 
     public static ColorE HUD_BLUE = new ColorE(0,125,200);
@@ -28,7 +30,7 @@ public class DrawUtil {
         float y = (float) pos.getY();
         PoseStack stack = graphics.pose();
         stack.scale(scale,scale,1);
-        Util.MC.font.drawInBatch(text, x*1/scale, y*1/scale, color.getHash(), drawShadow, stack.last().pose(), graphics.bufferSource(), Font.DisplayMode.SEE_THROUGH, 0, 15728880, Util.MC.font.isBidirectional());
+        MC.font.drawInBatch(text, x*1/scale, y*1/scale, color.getHash(), drawShadow, stack.last().pose(), graphics.bufferSource(), Font.DisplayMode.SEE_THROUGH, 0, 15728880, MC.font.isBidirectional());
         stack.scale(1/scale,1/scale,1);
         graphics.flush();
     }
@@ -133,13 +135,9 @@ public class DrawUtil {
 
 
     public static void drawItemStack(GuiGraphics graphics, ItemStack stack, Vector pos) {
-        int x = (int) pos.getX();
-        int y = (int) pos.getY();
+        int x = (int)Math.round(pos.getX());
+        int y = (int)Math.round(pos.getY());
         graphics.renderItem(stack,x,y);
-        graphics.renderItemDecorations(Util.MC.font,stack,x,y);
-    }
-
-    public static void scaleStart(PoseStack stack, float scale) {
-        stack.scale(scale,scale,1);
+        graphics.renderItemDecorations(MC.font,stack,x,y);
     }
 }

@@ -112,7 +112,7 @@ public class Key {
     public static int ACTION_HOLD = 2;
 
 
-    public static EventAction onKey = new EventAction(EventRegistry.EVENT_KEY_PRESS, true, () -> {
+    public static EventAction onKey = new EventAction(EventRegistry.EVENT_KEY_PRESS, () -> {
         int key = EventRegistry.EVENT_KEY_PRESS.getKey();
         int scancode = EventRegistry.EVENT_KEY_PRESS.getScancode();
         int action = EventRegistry.EVENT_KEY_PRESS.getState();

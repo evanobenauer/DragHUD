@@ -1,12 +1,16 @@
 package com.ejo.draghud;
 
 import com.ejo.draghud.gui.GuiManager;
-import com.ejo.draghud.util.Util;
+import com.ejo.draghud.util.Key;
+import com.ejo.draghud.util.ConsoleUtil;
 import net.fabricmc.api.ModInitializer;
 import com.ejo.glowlib.setting.SettingManager;
 import com.ejo.glowlib.time.StopWatch;
+import net.minecraft.client.Minecraft;
 
 public class DragHUD implements ModInitializer {
+
+	public static Minecraft MC = Minecraft.getInstance();
 
 	private static final SettingManager settingManager = new SettingManager("DragHUD", "settings");
 	private static final GuiManager guiManager = new GuiManager();
@@ -29,6 +33,7 @@ public class DragHUD implements ModInitializer {
 
 		startAutoSaveThread();
 
+		Key.onKey.subscribe();
 		getGuiManager().guiOpenAction.subscribe();
 		getGuiManager().renderHUD.subscribe();
 	}
@@ -45,7 +50,7 @@ public class DragHUD implements ModInitializer {
 				autoSaveTimer.start();
 				if (autoSaveTimer.hasTimePassedS(minutes * 60)) { //Save every 5 minutes
 					getSettingManager().saveAll();
-					System.out.println(Util.prefix + "AUTO-SAVE: Settings Saved");
+					System.out.println(ConsoleUtil.prefix + "AUTO-SAVE: Settings Saved");
 					autoSaveTimer.restart();
 				}
 			}

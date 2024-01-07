@@ -18,8 +18,15 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation 'com.github.evanobenauer:GlowLib:1.2.1'
-    include 'com.github.evanobenauer:GlowLib:1.2.1'
+    modImplementation 'com.github.evanobenauer:GlowLib:1.2.3'
+    include 'com.github.evanobenauer:GlowLib:1.2.3'
+
+    modImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    include group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+    modImplementation 'org.json:json:20231013'
+    include 'org.json:json:20231013'
+
 }
 
 base {

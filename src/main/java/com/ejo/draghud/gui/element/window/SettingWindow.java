@@ -63,11 +63,8 @@ public class SettingWindow extends GuiWindow {
         if (this.closeButton.isMouseOver()) updateMouseOver(new Vector(-1,-1)); //Stops the window from being draggable if over X button
 
         //Draw Title
-        DrawUtil.drawText(
-                graphics,
-                getParentWindow().getTitle(),
-                getPos().getAdded(new Vector(closeButton.getSize().getX() + 4 + 2,1 + getSize().getY()/2 - DrawUtil.getTextHeight()/2)),
-                ColorE.WHITE);
+        DrawUtil.drawText(graphics, getParentWindow().getTitle(),
+                getPos().getAdded(new Vector(closeButton.getSize().getX() + 4 + 2,1 + getSize().getY()/2 - DrawUtil.getTextHeight()/2)), ColorE.WHITE);
 
         //Draw Widgets
         int yOffset = 0;

@@ -1,6 +1,7 @@
 package com.ejo.draghud.gui.element;
 
 import com.ejo.draghud.event.EventRegistry;
+import com.ejo.draghud.gui.GUI;
 import com.ejo.draghud.gui.element.window.GuiWindow;
 import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
@@ -11,6 +12,9 @@ import com.ejo.glowlib.event.EventAction;
 import com.ejo.glowlib.math.Vector;
 import com.ejo.glowlib.misc.ColorE;
 import com.ejo.glowlib.util.NumberUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class GuiWidget {
 
@@ -26,7 +30,7 @@ public abstract class GuiWidget {
     private float hoverFade = 0;
 
     private final EventAction ANIMATION_HOVER_FADE = new EventAction(EventRegistry.EVENT_CALCULATE_ANIMATION,() -> {
-        hoverFade = getNextFade(isMouseOver(), hoverFade, 2, 50, 1f);
+        hoverFade = getNextFade(isMouseOver(), hoverFade, 0, 50, 1f);
     });
 
     public GuiWidget(Screen screen, Vector pos, Vector size, boolean shouldDraw) {
@@ -38,11 +42,10 @@ public abstract class GuiWidget {
     }
 
     public void draw(GuiGraphics graphics, Vector mousePos) {
-        mouseOver = updateMouseOver(mousePos);
+        this.mouseOver = updateMouseOver(mousePos);
         drawWidget(graphics, mousePos);
 
-        //Draw Hover Fade
-        DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(255, 255, 255, (int) hoverFade));
+        drawHoverFade(graphics, mousePos);
 
         //Draw Tooltip
         if (isMouseOver() && !(this instanceof GuiWindow)) {
@@ -51,8 +54,7 @@ public abstract class GuiWidget {
                 int yOffset = -8;
                 DrawUtil.drawRectangle(graphics, mousePos.getAdded(xOffset,yOffset), new Vector(DrawUtil.getTextWidth(getSetting().getDescription()) + 4, 13), new ColorE(50, 50, 50, 150));
                 DrawUtil.drawText(graphics,getSetting().getDescription(),mousePos.getAdded(2 + xOffset,2 + yOffset),ColorE.WHITE);
-            } catch (Exception e) {
-                //
+            } catch (Exception ignored) {
             }
         }
     }
@@ -67,7 +69,17 @@ public abstract class GuiWidget {
     protected boolean updateMouseOver(Vector mousePos) {
         boolean mouseOverX = mousePos.getX() >= getPos().getX() && mousePos.getX() <= getPos().getX() + getSize().getX();
         boolean mouseOverY = mousePos.getY() >= getPos().getY() && mousePos.getY() <= getPos().getY() + getSize().getY();
-        return mouseOver = mouseOverX && mouseOverY;
+        boolean isTopZ = true;
+        ArrayList<GuiWidget> widgetList = (ArrayList<GuiWidget>) ((GUI) getScreen()).getGuiElementList().clone();
+        Collections.reverse(widgetList);
+        for (GuiWidget widget : widgetList) {
+            boolean widgetMouseOverX = mousePos.getX() >= widget.getPos().getX() && mousePos.getX() <= widget.getPos().getX() + widget.getSize().getX();
+            boolean widgetMouseOverY = mousePos.getY() >= widget.getPos().getY() && mousePos.getY() <= widget.getPos().getY() + widget.getSize().getY();
+            if (mouseOverX && mouseOverY && widgetMouseOverX && widgetMouseOverY && !widget.equals(this)) {
+                if (widgetList.indexOf(widget) < widgetList.indexOf(this)) isTopZ = false;
+            }
+        }
+        return mouseOver = mouseOverX && mouseOverY && isTopZ;
     }
 
     public boolean isDrawn() {
@@ -82,6 +94,9 @@ public abstract class GuiWidget {
         this.size.set(vector);
     }
 
+    private void drawHoverFade(GuiGraphics graphics, Vector mousePos) {
+        DrawUtil.drawRectangle(graphics, getPos(), getSize(), new ColorE(255, 255, 255, (int) hoverFade));
+    }
 
     public float getNextFade(boolean condition, float fade, int min, int max, float speed) {
         if (condition) {

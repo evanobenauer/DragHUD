@@ -6,7 +6,7 @@ import com.ejo.draghud.gui.element.GuiButton;
 import com.ejo.draghud.gui.element.GuiWidget;
 import com.ejo.draghud.gui.element.window.*;
 import com.ejo.draghud.util.DrawUtil;
-import com.ejo.draghud.util.Util;
+import com.ejo.draghud.util.ConsoleUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,7 +25,7 @@ public class GUI extends Screen {
     // --------------------------------------------------------
     private final GuiButton saveButton = new GuiButton(this,"Save",new Vector(width-30,height-20),new Vector(30,20),new ColorE(0,100,175,200),(params) -> {
         DragHUD.getSettingManager().saveAll();
-        Util.sendMessage("Settings Saved");
+        ConsoleUtil.sendMessage("Settings Saved");
     });
 
 
@@ -53,7 +53,7 @@ public class GUI extends Screen {
     protected GUI(Component title) {
         super(title);
         addGuiElements(saveButton);
-        addGuiElements(inventory,armor,direction,fps,speed,coordinates, entityList);
+        addGuiElements(inventory,armor,direction,fps,speed,coordinates, entityList, entityData);
         //addGuiElements(armor,coordinates,direction,entityData,entityList,fps,inventory,speed,tps);
         startAnimationThread();
     }
