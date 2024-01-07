@@ -22,12 +22,6 @@ public class GUI extends Screen {
 
     private final ArrayList<GuiWidget> guiElementList = new ArrayList<>();
 
-    // --------------------------------------------------------
-    private final GuiButton saveButton = new GuiButton(this,"Save",new Vector(width-30,height-20),new Vector(30,20),new ColorE(0,100,175,200),(params) -> {
-        DragHUD.getSettingManager().saveAll();
-        ConsoleUtil.sendMessage("Settings Saved");
-    });
-
 
     private final ArmorWindow armor = new ArmorWindow(this,new Vector(0,0));
 
@@ -52,7 +46,6 @@ public class GUI extends Screen {
 
     protected GUI(Component title) {
         super(title);
-        addGuiElements(saveButton);
         addGuiElements(inventory,armor,direction,fps,speed,coordinates, entityList, entityData);
         //addGuiElements(armor,coordinates,direction,entityData,entityList,fps,inventory,speed,tps);
         startAnimationThread();
@@ -65,10 +58,6 @@ public class GUI extends Screen {
         //DRAW BACKGROUND
         DrawUtil.drawRectangle(guiGraphics, Vector.NULL, getSize(), new ColorE(0, 0, 0, 100));
         RenderSystem.setShaderColor(1, 1, 1, 1);
-
-        //MODIFY SAVE BUTTON
-        Vector saveButtonPos = new Vector(getSize().getX() - this.saveButton.getSize().getX() - 2, getSize().getY() - this.saveButton.getSize().getY() - 2);
-        this.saveButton.setPos(saveButtonPos);
 
         //DRAW ALL ELEMENTS
         for (GuiWidget element : getGuiElementList()) {

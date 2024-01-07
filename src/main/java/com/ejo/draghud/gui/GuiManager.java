@@ -46,6 +46,7 @@ public class GuiManager {
             for (GuiWidget element : DragHUD.getGuiManager().getGui().getGuiElementList()) {
                 if (!(element instanceof GuiWindow window)) continue;
                 window.setSettingsOpen(false); //Whenever the GUI closes, close all setting windows
+                DragHUD.getSettingManager().saveAll(); //Whenever the GUI closes, save all settings
                 if (!element.isDrawn()) continue;
                 if (!window.isPinned()) continue;
                 element.draw(new GuiGraphics(MC,MC.renderBuffers().bufferSource()), new Vector(-1,-1)); //Draw each element on the HUD with a mousePos of NULL
