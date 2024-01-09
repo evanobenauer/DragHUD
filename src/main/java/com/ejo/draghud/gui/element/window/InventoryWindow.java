@@ -31,7 +31,6 @@ public class InventoryWindow extends GuiWindow {
     protected void drawWindow(GuiGraphics graphics, Vector mousePos) {
         int itemSize = 16;
 
-        //RenderSystem.setShaderColor(1, 1, 1, transparency.get() / 255f);
         graphics.setColor(1,1,1,transparency.get() / 255f);
         float scale = this.scale.get().floatValue();
         setSize(new Vector(178,82).getMultiplied(scale));

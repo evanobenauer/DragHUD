@@ -91,7 +91,7 @@ public class GuiTextField extends GuiWidget {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         getSetting().set(buttonText);
     }

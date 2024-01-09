@@ -33,14 +33,16 @@ public class ArmorWindow extends GuiWindow {
 
         Vector texSize = new Vector(16,16);
         Vector addVec = Vector.NULL;
-        if (mode.get().equals("Horizontal")) {
-            setSize(new Vector(65,16).getMultiplied(scale));
-            addVec = new Vector(texSize.getX(),0);
-        }
-        if (mode.get().equals("Vertical")) {
-            setSize(new Vector(17,63).getMultiplied(scale));
-            nPos.add(new Vector(1,0));
-            addVec = new Vector(0,texSize.getY());
+        switch (mode.get()) {
+            case "Horizontal" -> {
+                setSize(new Vector(65,16).getMultiplied(scale));
+                addVec = new Vector(texSize.getX(),0);
+            }
+            case "Vertical" -> {
+                setSize(new Vector(17,63).getMultiplied(scale));
+                nPos.add(new Vector(1,0));
+                addVec = new Vector(0,texSize.getY());
+            }
         }
 
         nPos.multiply(1 / scale);

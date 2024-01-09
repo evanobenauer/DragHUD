@@ -4,7 +4,6 @@ import com.ejo.draghud.util.DrawUtil;
 import com.ejo.draghud.util.SettingWidget;
 import com.ejo.glowlib.math.MathE;
 import com.ejo.glowlib.misc.ColorE;
-import com.ejo.glowlib.util.ColorUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import com.ejo.glowlib.math.Vector;
@@ -55,7 +54,7 @@ public class EntityDataWindow extends GuiWindow {
 
         if (entity instanceof LivingEntity living) {
             float healthPercent = living.getHealth() / living.getMaxHealth();
-            ColorE healthColor = healthPercent <= 1 ? ColorUtil.getRedGreenScaledColor(healthPercent) : new ColorE(255, 255, 0);
+            ColorE healthColor = healthPercent <= 1 ? getRedGreenScaledColor(healthPercent) : new ColorE(255, 255, 0);
             DrawUtil.drawDualColorText(graphics, "\"" + entity.getName().getString() + "\"", " (" + MathE.roundDouble(living.getHealth(), 2) + "/" + MathE.roundDouble(living.getMaxHealth(),2) + ")", getPos().getAdded(2, 2 + yOff), ColorE.WHITE, healthColor);
         } else {
             DrawUtil.drawText(graphics, "\"" + entity.getName().getString() + "\"", getPos().getAdded(2, 2 + yOff), ColorE.WHITE);
@@ -73,8 +72,8 @@ public class EntityDataWindow extends GuiWindow {
 
             double speedPercent = (speed - (.1125 * 42.16)) / ((.3375 - .1125) * 42.16);
             double jumpPercent = (jump - .4) / (1 - .4);
-            ColorE speedColor = ColorUtil.getRedGreenScaledColor(speedPercent);
-            ColorE jumpColor = ColorUtil.getRedGreenScaledColor(jumpPercent);
+            ColorE speedColor = getRedGreenScaledColor(speedPercent);
+            ColorE jumpColor = getRedGreenScaledColor(jumpPercent);
 
             DrawUtil.drawDualColorText(graphics, " Speed: ", speed + " m/s", getPos().getAdded(2, 2 + yOff), ColorE.WHITE, speedColor);
             yOff += 12;
@@ -110,6 +109,10 @@ public class EntityDataWindow extends GuiWindow {
         });
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public static ColorE getRedGreenScaledColor(double scale) {
+        return new ColorE((int)((1 - scale) * 255), (int)(scale * 255), 0);
     }
 
 }

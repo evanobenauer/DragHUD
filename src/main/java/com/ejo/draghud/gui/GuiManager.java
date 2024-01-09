@@ -35,14 +35,14 @@ public class GuiManager {
         if (key == guiOpenKey.get() && action == GLFW.GLFW_PRESS) {
             if (Minecraft.getInstance().screen == null) {
                 Minecraft.getInstance().setScreen(getGui());
-            } else if (Minecraft.getInstance().screen == gui) {
+            } else if (Minecraft.getInstance().screen == getGui()) {
                 Minecraft.getInstance().setScreen(null);
             }
         }
     });
 
     public EventAction renderHUD = new EventAction(EventRegistry.EVENT_RENDER_HUD, () -> {
-        if (Minecraft.getInstance().screen == null) {
+        if (MC.screen == null || !MC.screen.equals(getGui())) {
             for (GuiWidget element : DragHUD.getGuiManager().getGui().getGuiElementList()) {
                 if (!(element instanceof GuiWindow window)) continue;
                 window.setSettingsOpen(false); //Whenever the GUI closes, close all setting windows

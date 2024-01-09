@@ -1,12 +1,19 @@
 package com.ejo.draghud;
 
+import com.ejo.draghud.event.EventRegistry;
 import com.ejo.draghud.gui.GuiManager;
 import com.ejo.draghud.util.Key;
 import com.ejo.draghud.util.ConsoleUtil;
+import com.ejo.glowlib.event.EventAction;
 import net.fabricmc.api.ModInitializer;
 import com.ejo.glowlib.setting.SettingManager;
 import com.ejo.glowlib.time.StopWatch;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 
 public class DragHUD implements ModInitializer {
 
@@ -23,41 +30,42 @@ public class DragHUD implements ModInitializer {
 		return guiManager;
 	}
 
-	private static final StopWatch autoSaveTimer = new StopWatch();
-
 	@Override
 	public void onInitialize() {
 		getGuiManager().instantiateGUI();
 
 		getSettingManager().loadAll();
 
-		startAutoSaveThread();
-
 		Key.onKey.subscribe();
+
 		getGuiManager().guiOpenAction.subscribe();
 		getGuiManager().renderHUD.subscribe();
+
+		//applyAutoFish();
 	}
 
-	private void startAutoSaveThread() {
-		int minutes = 5;
-		Thread autoSaveThread = new Thread(() -> {
-			while (true) {
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				autoSaveTimer.start();
-				if (autoSaveTimer.hasTimePassedS(minutes * 60)) { //Save every 5 minutes
-					getSettingManager().saveAll();
-					System.out.println(ConsoleUtil.prefix + "AUTO-SAVE: Settings Saved");
-					autoSaveTimer.restart();
+	//AUTO FISH ------------------------- TODO: REMOVE LATER-----------------------------------------------------------------------------------
+	private boolean shouldRecast = false;
+	private static final StopWatch autoFishTimer = new StopWatch();
+
+	private void applyAutoFish() {
+		new EventAction(EventRegistry.EVENT_PACKET, () -> {
+			Packet<?> packet = EventRegistry.EVENT_PACKET.getPacket();
+			if (packet instanceof ClientboundSoundPacket soundPacket) {
+				if (soundPacket.getSound().value().equals(SoundEvents.FISHING_BOBBER_SPLASH)) {
+					autoFishTimer.start();
+					autoFishTimer.restart();
+					shouldRecast = true;
+					MC.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND,0)); //Retrieve
 				}
 			}
-		});
-		autoSaveThread.setName("Auto Save Thread");
-		autoSaveThread.setDaemon(true);
-		autoSaveThread.start();
+
+			if (autoFishTimer.hasTimePassedS(1) && shouldRecast) {
+				shouldRecast = false;
+				MC.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 6)); //Recast
+			}
+
+		}).subscribe();
 	}
 
 }

@@ -33,12 +33,12 @@ public class CoordinatesWindow extends GuiWindow {
         String yLabel = (label.get() ? "Y " : "");
         String zLabel = (label.get() ? "Z " : "");
 
-        boolean shouldConvert = MC.level.dimensionTypeId().equals(BuiltinDimensionTypes.OVERWORLD) || MC.level.dimensionTypeId().equals(BuiltinDimensionTypes.NETHER);
-        float conversion = MC.level.dimensionTypeId().equals(BuiltinDimensionTypes.OVERWORLD) ? (float) 1 /8 : 8;
+        boolean shouldConvert = showNether.get() && (MC.level.dimensionTypeId().equals(BuiltinDimensionTypes.OVERWORLD) || MC.level.dimensionTypeId().equals(BuiltinDimensionTypes.NETHER));
+        float conversion = shouldConvert ? (MC.level.dimensionTypeId().equals(BuiltinDimensionTypes.OVERWORLD) ? (float) 1 /8 : 8) : 0;
 
-        String x = String.format("%.1f", MC.player.getX()) + (showNether.get() && shouldConvert ? " (" + String.format("%.1f", MC.player.getX() * conversion) + ")" : "");
+        String x = String.format("%.1f", MC.player.getX()) + (shouldConvert ? " (" + String.format("%.1f", MC.player.getX() * conversion) + ")" : "");
         String y = String.format("%.1f", MC.player.getY());
-        String z = String.format("%.1f", MC.player.getZ()) + (showNether.get() && shouldConvert ? " (" + String.format("%.1f", MC.player.getZ() * conversion) + ")" : "");
+        String z = String.format("%.1f", MC.player.getZ()) + (shouldConvert ? " (" + String.format("%.1f", MC.player.getZ() * conversion) + ")" : "");
 
         float xLength = (float) DrawUtil.getTextWidth(xLabel + x);
         float yLength = (float) DrawUtil.getTextWidth(yLabel + y);

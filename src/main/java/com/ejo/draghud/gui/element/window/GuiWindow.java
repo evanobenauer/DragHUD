@@ -82,9 +82,7 @@ public abstract class GuiWindow extends GuiWidget {
 
     }
 
-
     protected abstract void drawWindow(GuiGraphics graphics, Vector mousePos);
-
 
     @Override
     public void mousePressed(int button, int state, Vector mousePos) {
@@ -122,23 +120,23 @@ public abstract class GuiWindow extends GuiWidget {
     }
 
     private void boundWindowCoordinates() {
-        if (getPos().getX() < 0) {
+        if (getPos().getX() < 0)
             setPos(new Vector(0, getPos().getY()));
-        }
-        if (getPos().getY() < 0) {
+
+        if (getPos().getY() < 0)
             setPos(new Vector(getPos().getX(), 0));
-        }
-        if (getPos().getX() + getSize().getX() > getScreen().width) {
+
+        if (getPos().getX() + getSize().getX() > getScreen().width)
             setPos(new Vector(getScreen().width - getSize().getX(), getPos().getY()));
-        }
-        if (getPos().getY() + getSize().getY() > getScreen().height) {
+
+        if (getPos().getY() + getSize().getY() > getScreen().height)
             setPos(new Vector(getPos().getX(), getScreen().height - getSize().getY()));
-        }
+
     }
 
     private void drawAnchoredLines(GuiGraphics graphics, Vector mousePos) {
         switch (anchorX.get()) {
-            case "L" ->DrawUtil.drawRectangle(graphics,getPos(),new Vector(1,getSize().getY()),ColorE.RED);
+            case "L" -> DrawUtil.drawRectangle(graphics,getPos(),new Vector(1,getSize().getY()),ColorE.RED);
             case "R" -> DrawUtil.drawRectangle(graphics,getPos().getAdded(getSize().getX() - 1,0),new Vector(1,getSize().getY()),ColorE.RED);
         }
 

@@ -8,6 +8,8 @@ public class EventRegistry {
     public static KeyPressEvent EVENT_KEY_PRESS = new KeyPressEvent();
     public static MouseClickEvent EVENT_MOUSE_CLICK = new MouseClickEvent();
 
+    public static PacketEvent EVENT_PACKET = new PacketEvent();
+
     public static EventE EVENT_RENDER_HUD = new EventE();
 
     public static EventE EVENT_CALCULATE_ANIMATION = new EventE();

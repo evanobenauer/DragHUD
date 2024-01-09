@@ -69,18 +69,19 @@ public abstract class GuiWidget {
     protected boolean updateMouseOver(Vector mousePos) {
         boolean mouseOverX = mousePos.getX() >= getPos().getX() && mousePos.getX() <= getPos().getX() + getSize().getX();
         boolean mouseOverY = mousePos.getY() >= getPos().getY() && mousePos.getY() <= getPos().getY() + getSize().getY();
-        boolean isTopZ = true;
+        if (!mouseOverX || !mouseOverY) return mouseOver = false;
         ArrayList<GuiWidget> widgetList = (ArrayList<GuiWidget>) ((GUI) getScreen()).getGuiElementList().clone();
         Collections.reverse(widgetList);
         for (GuiWidget widget : widgetList) {
             boolean widgetMouseOverX = mousePos.getX() >= widget.getPos().getX() && mousePos.getX() <= widget.getPos().getX() + widget.getSize().getX();
             boolean widgetMouseOverY = mousePos.getY() >= widget.getPos().getY() && mousePos.getY() <= widget.getPos().getY() + widget.getSize().getY();
-            if (mouseOverX && mouseOverY && widgetMouseOverX && widgetMouseOverY && !widget.equals(this)) {
-                if (widgetList.indexOf(widget) < widgetList.indexOf(this)) isTopZ = false;
+            if (widgetMouseOverX && widgetMouseOverY && !widget.equals(this)) {
+                if (widgetList.indexOf(widget) < widgetList.indexOf(this)) return mouseOver = false;
             }
         }
-        return mouseOver = mouseOverX && mouseOverY && isTopZ;
+        return mouseOver = true;
     }
+
 
     public boolean isDrawn() {
         return shouldDraw;
