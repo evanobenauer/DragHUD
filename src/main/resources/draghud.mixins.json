@@ -6,7 +6,8 @@
   "client": [
     "MixinGameRenderer",
     "MixinKeyboardHandler",
-    "MixinMouseHandler"
+    "MixinMouseHandler",
+    "MixinConnection"
   ],
   "injectors": {
     "defaultRequire": 1

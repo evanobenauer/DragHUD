@@ -46,8 +46,7 @@ public class GUI extends Screen {
 
     protected GUI(Component title) {
         super(title);
-        addGuiElements(inventory,armor,direction,fps,speed,coordinates, entityList, entityData);
-        //addGuiElements(armor,coordinates,direction,entityData,entityList,fps,inventory,speed,tps);
+        addGuiElements(inventory,armor,direction,fps,speed,coordinates, entityList, entityData, tps);
         startAnimationThread();
     }
 
@@ -57,7 +56,7 @@ public class GUI extends Screen {
 
         //DRAW BACKGROUND
         DrawUtil.drawRectangle(guiGraphics, Vector.NULL, getSize(), new ColorE(0, 0, 0, 100));
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        guiGraphics.setColor(1f,1f,1f,1f);
 
         //DRAW ALL ELEMENTS
         for (GuiWidget element : getGuiElementList()) {

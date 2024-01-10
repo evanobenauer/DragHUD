@@ -8,10 +8,12 @@ public class PacketEvent extends EventE {
     private boolean cancelled = false;
 
     private Packet<?> packet;
+    private Type type;
 
     @Override
     public void post(Object... args) {
-        packet = (Packet<?>) args[0];
+        this.packet = (Packet<?>) args[0];
+        this.type = (Type) args[1];
         super.post(args);
     }
 
@@ -26,4 +28,14 @@ public class PacketEvent extends EventE {
     public boolean isCancelled() {
         return cancelled;
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public enum Type {
+        SEND,
+        RECEIVE
+    }
+
 }

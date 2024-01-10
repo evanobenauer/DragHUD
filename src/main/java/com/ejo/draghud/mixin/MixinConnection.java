@@ -22,7 +22,7 @@ public class MixinConnection extends SimpleChannelInboundHandler<Packet<?>> {
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;genericsFtw(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;)V"), cancellable = true)
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
         PacketEvent event = EventRegistry.EVENT_PACKET;
-        event.post(packet);
+        event.post(packet,PacketEvent.Type.RECEIVE);
         if (event.isCancelled()) {
             event.setCancelled(false);
             ci.cancel();
@@ -33,7 +33,7 @@ public class MixinConnection extends SimpleChannelInboundHandler<Packet<?>> {
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;sendPacket(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;Z)V"), cancellable = true)
     private void send(Packet<?> packet, @Nullable PacketSendListener packetSendListener, boolean bl, CallbackInfo ci) {
         PacketEvent event = EventRegistry.EVENT_PACKET;
-        event.post(packet);
+        event.post(packet,PacketEvent.Type.SEND);
         if (event.isCancelled()) {
             event.setCancelled(false);
             ci.cancel();
