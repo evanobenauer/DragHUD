@@ -181,6 +181,7 @@ public abstract class GuiWindow extends GuiWidget {
     }
 
     private void updateDragState(int button, int state, Vector mousePos) {
+        //TODO: Maybe use a comparator or the comparable interface to streamline this
         this.dragOffset = getPos().getAdded(mousePos.getMultiplied(-1)).getMod();
         ArrayList<GuiWidget> widgetList = (ArrayList<GuiWidget>) ((GUI) getScreen()).getGuiElementList().clone();
         Collections.reverse(widgetList);
